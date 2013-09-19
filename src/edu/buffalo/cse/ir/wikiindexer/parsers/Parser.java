@@ -53,11 +53,11 @@ public class Parser {
 		
 		XMLReader xmlReader;
 		
-			xmlReader = saxParser.getXMLReader();
+		xmlReader = saxParser.getXMLReader();
 		
 		xmlReader.setContentHandler(new WikipediaSaxParser(props,docs));
 	
-			xmlReader.parse(filename);
+		xmlReader.parse(filename);
 		}catch (IOException | SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

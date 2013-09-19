@@ -76,7 +76,7 @@ public class WikipediaDocument {
 	 * @param title: The parsed title of the section
 	 * @param text: The parsed text of the section
 	 */
-	protected void addSection(String title, String text) {
+	public void addSection(String title, String text) {
 		sections.add(new Section(title, text));
 	}
 	

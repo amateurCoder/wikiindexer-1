@@ -61,6 +61,11 @@ public class ParserTest {//extends PropertiesBasedTest {
 //		testClass.parse(FileUtil.getRootFilesFolder(idxProps) + "five_entries.xml", list);
 		testClass.parse("C:/Sandbox/wikiindexer/files/five_entries.xml", list);
 		assertEquals(5, list.size());
+		assertEquals(7, list.get(0).getSections().size());
+		assertEquals(3, list.get(1).getSections().size());
+		assertEquals(2, list.get(2).getSections().size());
+		assertEquals(1, list.get(3).getSections().size());
+		assertEquals(5, list.get(4).getSections().size());
 		/* TODO: Add structural test here */
 		
 		

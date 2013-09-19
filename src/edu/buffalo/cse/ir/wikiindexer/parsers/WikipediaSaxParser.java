@@ -1,14 +1,15 @@
 package edu.buffalo.cse.ir.wikiindexer.parsers;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Properties;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
+import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaParser;
 
 public class WikipediaSaxParser extends Parser implements ContentHandler {
 
@@ -32,10 +33,10 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	private int id;
 	private String timestamp;
 	private String ipOrUsername;
-	private String text;
 
-	Collection<WikipediaDocument> wikiDocs;
+	private Collection<WikipediaDocument> wikiDocs;
 	private WikipediaDocument wikipediaDocument;
+	private StringBuilder textBuffer;
 
 	@Override
 	public void characters(char[] ch, int start, int length)
@@ -53,9 +54,8 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 			String str = new String(ch, start, length);
 			id = Integer.parseInt(str);
 			System.out.println("Id :" + id);
-		}	else if (boolText){
-			text = new String(ch, start, length);
-			System.out.println("Text :" + text);
+		} else if (boolText) {
+			textBuffer.append(ch, start, length);
 		}
 	}
 
@@ -68,31 +68,27 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	@Override
 	public void endElement(String uri, String localname, String tagName)
 			throws SAXException {
-		if (("title").equals(tagName)) {
+		if (("title").equalsIgnoreCase(tagName)) {
 			boolTitle = false;
-		} else if (("id").equals(tagName)) {
+		} else if (("id").equalsIgnoreCase(tagName)) {
 			boolId = false;
-		} else if (("revision").equals(tagName)) {
+		} else if (("revision").equalsIgnoreCase(tagName)) {
 			boolRevision = false;
-		} else if (("timestamp").equals(tagName)) {
+		} else if (("timestamp").equalsIgnoreCase(tagName)) {
 			boolTimestamp = false;
-		} else if (("contributor").equals(tagName)) {
+		} else if (("contributor").equalsIgnoreCase(tagName)) {
 			boolContributor = false;
-		} else if (("ip").equals(tagName)) {
+		} else if (("ip").equalsIgnoreCase(tagName)) {
 			boolIP = false;
-		} else if (("username").equals(tagName)) {
+		} else if (("username").equalsIgnoreCase(tagName)) {
 			boolUsername = false;
-		} else if (("text").equals(tagName)) {
+		} else if (("text").equalsIgnoreCase(tagName)) {
 			boolText = false;
-		} else if (("page").equals(tagName)) {
-			try {
-				wikipediaDocument = new WikipediaDocument(id, timestamp,
-						ipOrUsername, title);
-				add(wikipediaDocument, wikiDocs);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} else if (("page").equalsIgnoreCase(tagName)) {
+			WikipediaParser wikipediaParser = new WikipediaParser(title, id,
+					timestamp, ipOrUsername, textBuffer.toString());
+			wikipediaDocument = wikipediaParser.getWikipediaDocument();
+			add(wikipediaDocument, wikiDocs);
 		}
 	}
 
@@ -137,21 +133,22 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	@Override
 	public void startElement(String uri, String localname, String tagName,
 			Attributes attributes) throws SAXException {
-		if (("title").equals(tagName)) {
+		if (("title").equalsIgnoreCase(tagName)) {
 			boolTitle = true;
-		} else if (("id").equals(tagName)) {
+		} else if (("id").equalsIgnoreCase(tagName)) {
 			boolId = true;
-		} else if (("revision").equals(tagName)) {
+		} else if (("revision").equalsIgnoreCase(tagName)) {
 			boolRevision = true;
-		} else if (("timestamp").equals(tagName)) {
+		} else if (("timestamp").equalsIgnoreCase(tagName)) {
 			boolTimestamp = true;
-		} else if (("contributor").equals(tagName)) {
+		} else if (("contributor").equalsIgnoreCase(tagName)) {
 			boolContributor = true;
-		} else if (("ip").equals(tagName)) {
+		} else if (("ip").equalsIgnoreCase(tagName)) {
 			boolIP = true;
-		} else if (("username").equals(tagName)) {
+		} else if (("username").equalsIgnoreCase(tagName)) {
 			boolUsername = true;
-		} else if (("text").equals(tagName)) {
+		} else if (("text").equalsIgnoreCase(tagName)) {
+			textBuffer = new StringBuilder();
 			boolText = true;
 		}
 	}
