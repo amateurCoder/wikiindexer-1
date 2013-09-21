@@ -43,17 +43,13 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 			throws SAXException {
 		if (boolTitle) {
 			title = new String(ch, start, length);
-			System.out.println("Title :" + title);
 		} else if (boolTimestamp) {
 			timestamp = new String(ch, start, length);
-			System.out.println("Time :" + timestamp);
 		} else if ((boolContributor) && ((boolIP) || (boolUsername))) {
 			ipOrUsername = new String(ch, start, length);
-			System.out.println("IP/Username :" + ipOrUsername);
 		} else if ((!boolRevision) && (boolId)) {
 			String str = new String(ch, start, length);
 			id = Integer.parseInt(str);
-			System.out.println("Id :" + id);
 		} else if (boolText) {
 			textBuffer.append(ch, start, length);
 		}

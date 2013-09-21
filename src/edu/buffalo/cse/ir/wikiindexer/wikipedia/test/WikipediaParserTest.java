@@ -144,6 +144,16 @@ public class WikipediaParserTest {
 		"|DATE OF DEATH     = 9 March 2005" +
 		"|PLACE OF DEATH    = [[Largs]], [[Ayrshire]], [[Scotland]], UK" +
 		"}}"));
+		assertEquals("", WikipediaParser.parseTemplates("{{for|the American actor|Russ Conway (actor)}}" +
+		"{{Use dmy dates|date=November 2012}}" +
+		"{{Infobox musical artist &lt;!-- See Wikipedia:WikiProject_Musicians --&gt;" +
+		"| name                = Russ Conway" +
+		"| birth_date          = {{birth date|1925|09|2|df=y}}" +
+		"| birth_place         = [[Bristol]], [[England]], UK" +
+		"| death_date          = {{death date and age|2000|11|16|1925|09|02|df=y}}" +
+		"| death_place         = [[Eastbourne]], [[Sussex]], England, UK" +
+		"| notable_instruments =" + 
+		"}}"));
 	}
 
 	/**
