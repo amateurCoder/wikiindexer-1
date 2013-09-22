@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * An abstract class that represents a dictionary object for a given index
  */
 public abstract class Dictionary implements Writeable {
-	protected static Map<String,Integer> termDictionary;
+	public static Map<String,Integer> termDictionary;
 	public Dictionary (Properties props, INDEXFIELD field) {
 		//TODO Implement this method
 		termDictionary = new HashMap<String,Integer>();

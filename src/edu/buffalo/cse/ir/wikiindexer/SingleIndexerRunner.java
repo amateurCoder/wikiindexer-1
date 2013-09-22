@@ -75,6 +75,8 @@ public class SingleIndexerRunner {
 				}
 			}
 		}
+		
+	
 	}
 
 	protected boolean isFinished() {

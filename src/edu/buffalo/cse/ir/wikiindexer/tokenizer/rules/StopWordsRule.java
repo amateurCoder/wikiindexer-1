@@ -52,11 +52,11 @@ public class StopWordsRule implements TokenizerRule {
 			while (stream.hasNext()) {
 				token = stream.next();
 				if (!token.equals(null)) {
-					System.out.println("Incoming Token:" + token);
+					
 					String[] tempArr = token.split(" ");
 					ArrayList<String> finalArr = new ArrayList<String>();
 					for (int i = 0; i < tempArr.length; i++) {
-						if (!stopWords.contains(tempArr[i])) {
+						if (!stopWords.contains(tempArr[i].toLowerCase())) {
 							finalArr.add(tempArr[i]);
 						}
 					}
@@ -68,7 +68,6 @@ public class StopWordsRule implements TokenizerRule {
 					}
 					// To remove extra space at the end
 					finalToken = finalToken.trim();
-					System.out.println("Final Token:" + finalToken);
 					if (finalToken == "") {
 						stream.previous();
 						stream.remove();

@@ -24,12 +24,12 @@ public class SpecialCharRule implements TokenizerRule {
 			while (count < nTokens) {
 				token = stream.next();
 				if (token != null) {
-					if (nTokens == 1) {
+					if (nTokens == 1) {//[\\~\\@\\#\\$\\)\\(\\%\\^\\=\\*\\&\\+\\:\\>\\<\\_\\/\\\\\\;\\|]
 						if (token
-								.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|_/\\\\\\(\\)]+.*?")) {
+								.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|\\\"\\,_/\\\\\\(\\)]+.*?")) {
 							token = token
 									.replaceAll(
-											"[~@#\\$%\\*=\\^\\&\\+:;<>\\|_/\\\\\\(\\)]+",
+											"[~@#\\$%\\*=\\^\\&\\+:;<>\\|\\\"\\,_/\\\\\\(\\)]+",
 											" ");
 							tempArr = token.trim().split(" +");
 							finalToken="";

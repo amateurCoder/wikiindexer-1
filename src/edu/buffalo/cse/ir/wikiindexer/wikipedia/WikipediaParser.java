@@ -130,7 +130,7 @@ public class WikipediaParser {
 		String tempStr[] = new String[2];
 		tempStr[0] = "";
 		tempStr[1] = "";
-
+System.out.println("in parselinks");
 		if (null != text) {
 			// case-1
 			if (text.matches("\\[\\[[0-9A-Za-z- \\|0-9A-Za-z- ]+\\]\\]")) {
@@ -144,21 +144,31 @@ public class WikipediaParser {
 				}
 				tempStr[1] = tempStr[1].replaceAll(" ", "_");
 				tempStr[1] = capitalize(tempStr[1]);
+				
 				return tempStr;
 			}
 
 			// for link with stupid (brackets)
 			// case1&case2
-			if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
-
-				tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
-				tempStr[1] = tempStr[1].replaceAll(" ", "_");
-				tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
-						+ tempStr[1].substring(1);
-				String temp[] = text.split("\\ ");
-				tempStr[0] = temp[0].replaceAll("\\[|,", "");
-
+			if (text.matches("\\[+.* \\(*.*\\)*\\|.*?\\]+.*")) {
+				if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
+					tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
+					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
+							+ tempStr[1].substring(1);
+					String temp[] = text.split("\\ ");
+					tempStr[0] = temp[0].replaceAll("\\[|,", "");
+				} else {
+					String temp[] = text.split("\\|");
+					tempStr[0] = temp[1].replaceAll("\\]", "");
+					tempStr[1] = temp[0].replaceAll("\\[|\\]|\\|", "");
+					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
+							+ tempStr[1].substring(1);
+				}
 			}
+				 
+			
 
 			// case with :
 			if (text.matches("\\[\\[.*:.*\\|*\\]\\]+")) {
@@ -373,7 +383,7 @@ public class WikipediaParser {
 		matcher = pattern.matcher(tempText);
 		while (matcher.find()) {
 			tempArr = parseLinks(matcher.group(0).trim());
-			if (!tempArr[0].trim().equals(null)) {
+			if (!tempArr[0].trim().equals(null)&&!tempArr[0].trim().equals("")) {
 				wikipediaDocument.addLink(tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);

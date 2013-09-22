@@ -86,8 +86,9 @@ public class Parser {
 	 */
 	protected synchronized void add(WikipediaDocument doc,
 			Collection<WikipediaDocument> documents) {
-
+		
 		documents.add(doc);
+		
 
 	}
 }

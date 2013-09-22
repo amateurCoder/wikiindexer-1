@@ -19,7 +19,7 @@ public class Partitioner {
 	 */
 	public static int getNumPartitions() {
 		//TODO: Implement this method
-		return -1;
+		return 1;
 	}
 	
 	/**
@@ -31,6 +31,6 @@ public class Partitioner {
 	 */
 	public static int getPartitionNumber (String term) {
 		//TDOD: Implement this method
-		return -1;
+		return 0;
 	}
 }

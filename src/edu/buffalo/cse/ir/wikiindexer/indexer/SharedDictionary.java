@@ -20,11 +20,12 @@ public class SharedDictionary extends Dictionary {
 	 * @param props: The properties file
 	 * @param field: The field being indexed by this dictionary
 	 */
+	private static int docId=1;
 	
-	private static int docId;
 	public SharedDictionary(Properties props, INDEXFIELD field) {
 		super(props, field);
 		// TODO Add more code here if needed
+		
 		
 	}
 	
@@ -42,12 +43,14 @@ public class SharedDictionary extends Dictionary {
 		
 		if(termDictionary.get(value)!=null)
 		{
+			
 			return termDictionary.get(value);
 		}
 		else
 		{
-			termDictionary.put(value,docId);
-			docId++;
+			
+			termDictionary.put(value,docId++);
+			
 			return termDictionary.get(value);
 		}
 		

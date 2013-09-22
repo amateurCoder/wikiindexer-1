@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletionService;
@@ -22,6 +23,7 @@ import org.junit.runner.Computer;
 import org.junit.runner.JUnitCore;
 
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants.RequiredConstant;
+import edu.buffalo.cse.ir.wikiindexer.indexer.Dictionary;
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.indexer.IndexerException;
 import edu.buffalo.cse.ir.wikiindexer.indexer.SharedDictionary;
@@ -125,7 +127,13 @@ public class Runner {
 					queuesize = getQueueSize(queue);
 				}
 
+				
+			
+				
+					
+				
 			tokenizeAndIndex(properties, queue);
+			
 		} catch (InterruptedException e) {
 
 		}
@@ -149,7 +157,7 @@ public class Runner {
 		ExecutorService threadPool = Executors.newFixedThreadPool(Integer.valueOf(properties.get(IndexerConstants.NUM_TOKENIZER_THREADS).toString()));
 		CompletionService<IndexableDocument> pool = new ExecutorCompletionService<IndexableDocument>(threadPool);
 		ThreadPoolExecutor tpe = (ThreadPoolExecutor) threadPool;
-
+		
 
 
 		tokenizerThread = new Thread(new TokenizerRunner(queue, pool, properties));
@@ -170,12 +178,16 @@ public class Runner {
 		SingleIndexerRunner catIdxer = new SingleIndexerRunner(properties, INDEXFIELD.CATEGORY, INDEXFIELD.LINK, docDict, false);
 		SingleIndexerRunner linkIdxer = new SingleIndexerRunner(properties, INDEXFIELD.LINK, INDEXFIELD.LINK, docDict, true);
 		Map<String, Integer> tokenmap;
-
 		try {
 			while (remaining > 0) {
+				
 				idoc = pool.take().get();
+				
+				
 				if (idoc != null) {
+					
 					currDocId = docDict.lookup(idoc.getDocumentIdentifier());
+			
 					TokenStream stream;
 					try {
 						for (INDEXFIELD fld : INDEXFIELD.values()) {
@@ -183,28 +195,35 @@ public class Runner {
 
 							if (stream != null) {
 								tokenmap = stream.getTokenMap();
-
+								
 								if (tokenmap != null) {
 									switch (fld) {
 									case TERM:
+										
 										termRunner.addToIndex(tokenmap,
 												currDocId);
 										break;
 									case AUTHOR:
+										
 										authIdxer.processTokenMap(
 												currDocId, tokenmap);
 										break;
 									case CATEGORY:
+									
 										catIdxer.processTokenMap(currDocId,
 												tokenmap);
 										break;
 									case LINK:
+										
 										linkIdxer.processTokenMap(
 												currDocId, tokenmap);
 										break;
 									}
+									
+									
 								}
 							}
+							
 
 						}
 					} catch (IndexerException e) {
@@ -220,6 +239,7 @@ public class Runner {
 
 				remaining = totalTasks - completed;
 			}
+		
 		} catch (ExecutionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -230,6 +250,7 @@ public class Runner {
 			authIdxer.cleanup();
 			catIdxer.cleanup();
 			linkIdxer.cleanup();
+			System.out.println("Shared Dictionary: "+Dictionary.termDictionary);
 			docDict.writeToDisk();
 			docDict.cleanUp();
 		} catch (IndexerException e) {
@@ -243,7 +264,6 @@ public class Runner {
 		}
 
 		threadPool.shutdown();
-
 	}
 
 
@@ -332,6 +352,7 @@ public class Runner {
 
 		public void run() {
 			parser.parse(FileUtil.getDumpFileName(idxProps), coll);
+			
 		}
 
 	}
@@ -373,6 +394,8 @@ public class Runner {
 
 					tknizerMap = initMap(properties);
 					pool.submit(new DocumentTransformer(tknizerMap, doc));
+				
+					
 				}
 			}
 

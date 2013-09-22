@@ -64,7 +64,7 @@ public class TokenizerFactory {
 		try {
 			if(field.toString().equalsIgnoreCase("AUTHOR"))
 			{
-				return new Tokenizer(new CapitalizationRule());
+				return new Tokenizer();
 			
 			}
 			if(field.toString().equalsIgnoreCase("LINK"))
@@ -74,12 +74,12 @@ public class TokenizerFactory {
 			}
 			if(field.toString().equalsIgnoreCase("CATEGORY"))
 			{
-				return new Tokenizer(new WhitespaceRule());
+				return new Tokenizer();
 			
 			}
 			if(field.toString().equalsIgnoreCase("TERM"))
 			{
-				return new Tokenizer(new CapitalizationRule());
+				return new Tokenizer(new WhitespaceRule(),new PunctuationRule(),new SpecialCharRule(),new StopWordsRule());
 			
 			}
 		} catch (TokenizerException e) {

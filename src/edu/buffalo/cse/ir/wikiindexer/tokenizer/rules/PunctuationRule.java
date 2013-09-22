@@ -12,21 +12,22 @@ public class PunctuationRule implements TokenizerRule {
 		if (stream != null) {
 			String token;
 			stream.previous();
-			while (stream.hasNext()) { 
+			while (stream.hasNext()) {
 				token = stream.next();
-				if(token!=null){
-					if(token.matches(".*?[a-zA-Z0-9]+\\.[a-zA-Z0-9]+\\.?[a-zA-Z0-9]*\\.?[a-zA-Z0-9]*(\\?|!)")){
+				if (token != null) {
+					token=token.replaceAll(" +", " ");
+					if (token
+							.matches(".*?[a-zA-Z0-9]+\\.[a-zA-Z0-9]+\\.?[a-zA-Z0-9]*\\.?[a-zA-Z0-9]*(\\?|!)")) {
 						token = token.replaceAll("(\\?|!)", "");
 						stream.previous();
 						stream.set(token);
-					}
-					else if (token.matches(".*?(\\.|\\?|!)")) {
+					} else if (token.matches(".*?(\\.|\\?|!)")) {
 						token = token.replaceAll("(\\.|\\?|!)", "");
 						stream.previous();
 						stream.set(token);
 					}
 				}
-				
+
 			}
 			stream.reset();
 		}
