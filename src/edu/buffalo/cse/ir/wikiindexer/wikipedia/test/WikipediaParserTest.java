@@ -163,47 +163,69 @@ public class WikipediaParserTest {
 	@Test
 	public final void testParseLinks() {
 		//null and empty checks
+		//
 		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks(""));
+		//
 		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks(null));
 		
 		//simple links
+		//-1
 		assertEquals(new Object[]{"Lone Star State","Texas"}, WikipediaParser.parseLinks("[[Texas|Lone Star State]]"));
 		
 		//auto capitalization
+		//0
 		assertEquals(new Object[]{"London has public transport", "Public_transport"}, WikipediaParser.parseLinks("London has [[public transport]]"));
 		
 		//drop after _ and , automatically
+		//1
 		assertEquals(new Object[]{"kingdom", "Kingdom_(biology)"}, WikipediaParser.parseLinks("[[kingdom (biology)|]]"));
+		//2
 		assertEquals(new Object[]{"Seattle", "Seattle,_Washington"}, WikipediaParser.parseLinks("[[Seattle, Washington|]]"));
 		
 		//outside namespace, not interested
+		//3
 		assertEquals(new Object[]{"Village pump", ""}, WikipediaParser.parseLinks("[[Wikipedia:Village pump|]]"));
+		//4
 		assertEquals(new Object[]{"Manual of Style", ""}, WikipediaParser.parseLinks("[[Wikipedia:Manual of Style (headings)|]]"));
+		//5
 		assertEquals(new Object[]{"Wiktionary:Hello",""}, WikipediaParser.parseLinks("[[Wiktionary:Hello]]"));
+		//6
 		assertEquals(new Object[]{"fr:bonjour",""}, WikipediaParser.parseLinks("[[Wiktionary:fr:bonjour|]]"));
+		//7
 		assertEquals(new Object[]{"Sound",""}, WikipediaParser.parseLinks("[[media:Classical guitar scale.ogg|Sound]]"));
+		//8
 		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks("[[File:wiki.png]]"));
+		//9
 		assertEquals(new Object[]{"Wikipedia encyclopedia",""}, WikipediaParser.parseLinks("[[File:wiki.png|right|Wikipedia encyclopedia]]"));
+		//10
 		assertEquals(new Object[]{"Wikipedia logo",""}, WikipediaParser.parseLinks("[[File:wiki.png|frame|alt=Puzzle globe|Wikipedia logo]]"));
 												
 		
 		//blending etc.
+		//11
 		assertEquals(new Object[]{"New York also has public transportation", "Public_transport"}, WikipediaParser.parseLinks("New York also has [[public transport|public transportation]]"));
+		//12
 		assertEquals(new Object[]{"San Francisco also has public transportation", "Public_transport"}, WikipediaParser.parseLinks("San Francisco also has [[public transport]]ation"));
+		//13
 		assertEquals(new Object[]{"A micro-second", "Micro-"}, WikipediaParser.parseLinks("A [[micro-]]<nowiki />second"));
+		//14
 		assertEquals(new Object[]{"Wikipedia:Manual of Style#Links",""}, WikipediaParser.parseLinks("[[Wikipedia:Manual of Style#Links|]]"));
 		
 		//categories: the method should parse 'em but not index
+		//15
 		assertEquals(new Object[]{"Character sets",""}, WikipediaParser.parseLinks("[[Category:Character sets]]"));
 		
 		//same as above, but gos in the index not categories
+		//16
 		assertEquals(new Object[]{"Category:Character sets",""}, WikipediaParser.parseLinks("[[:Category:Character sets]]"));
 		
 		//language links: parse but dont add to main index
+		//17
 		assertEquals(new Object[]{"es:Plancton",""}, WikipediaParser.parseLinks("[[es:Plancton]]"));
 		assertEquals(new Object[]{"ru:Планктон",""}, WikipediaParser.parseLinks("[[ru:Планктон]]"));
 		
 		//external links
+		//18
 		assertEquals(new Object[]{"Wikipedia",""}, WikipediaParser.parseLinks("[http://www.wikipedia.org Wikipedia]"));
 		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks("[http://www.wikipedia.org]"));
 	}

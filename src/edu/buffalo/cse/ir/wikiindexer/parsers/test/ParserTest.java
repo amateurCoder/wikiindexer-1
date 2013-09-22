@@ -3,22 +3,19 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.parsers.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
 
-import edu.buffalo.cse.ir.wikiindexer.FileUtil;
 import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
-import edu.buffalo.cse.ir.wikiindexer.test.PropertiesBasedTest;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
 
 /**
@@ -61,12 +58,31 @@ public class ParserTest {//extends PropertiesBasedTest {
 //		testClass.parse(FileUtil.getRootFilesFolder(idxProps) + "five_entries.xml", list);
 		testClass.parse("C:/Sandbox/wikiindexer/files/five_entries.xml", list);
 		assertEquals(5, list.size());
-		assertEquals(7, list.get(0).getSections().size());
-		assertEquals(3, list.get(1).getSections().size());
-		assertEquals(2, list.get(2).getSections().size());
+		
+		assertEquals(8, list.get(0).getSections().size());
+		assertEquals("Default", list.get(0).getSections().get(0).getTitle());
+
+		assertEquals(4, list.get(1).getSections().size());
+		assertEquals(3, list.get(2).getSections().size());
 		assertEquals(1, list.get(3).getSections().size());
-		assertEquals(5, list.get(4).getSections().size());
+		assertEquals(6, list.get(4).getSections().size());
 		/* TODO: Add structural test here */
+		Iterator<WikipediaDocument> iterator = list.iterator();
+		
+		/*for (WikipediaDocument temp : list) {
+			for(String c:temp.getCategories()){
+				System.out.println("C=" + c);
+			}
+			for(String c:temp.getLinks()){
+				System.out.println("L=" + c);
+			}
+		}*/
+		assertEquals(8, list.get(0).getCategories().size());
+		
+		assertEquals(33, list.get(0).getLinks().size());
+		
+		
+		
 		
 		
 	}
