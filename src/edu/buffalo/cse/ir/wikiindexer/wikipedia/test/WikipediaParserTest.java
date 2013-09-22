@@ -180,6 +180,9 @@ public class WikipediaParserTest {
 		//1
 		assertEquals(new Object[]{"kingdom", "Kingdom_(biology)"}, WikipediaParser.parseLinks("[[kingdom (biology)|]]"));
 		assertEquals(new Object[]{"king dom", "Kingdom_(biology)"}, WikipediaParser.parseLinks("[[kingdom (biology)|king dom]]"));
+		//assertEquals(new Object[]{"Gold", "Gold_(TV channel)"}, WikipediaParser.parseLinks("[[Gold (TV channel)|Gold]]|"));
+		assertEquals(new Object[]{"Redcliffe", "Redcliffe,_Bristol"}, WikipediaParser.parseLinks("[[Redcliffe, Bristol|Redcliffe]]"));
+		
 		//2
 		assertEquals(new Object[]{"Seattle", "Seattle,_Washington"}, WikipediaParser.parseLinks("[[Seattle, Washington|]]"));
 		

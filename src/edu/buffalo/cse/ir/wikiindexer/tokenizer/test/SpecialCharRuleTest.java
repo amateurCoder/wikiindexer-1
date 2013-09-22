@@ -31,7 +31,7 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 			 fail("Rule not implemented");
 		} else {
 			try {
-				if (isPreTokenization) {
+				if (true) {
 					//special symbols one by one
 					assertArrayEquals(new Object[]{"destructor is method"}, 
 							runtest("destructor is ~method()")); //tilda, brackets
@@ -52,7 +52,7 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 					assertArrayEquals(new Object[]{"case x continue"}, 
 							runtest("case x: continue;")); //: ;
 					assertArrayEquals(new Object[]{"stdin cut -f1 sort myfile"}, 
-							runtest("stdin < cut -f1 | sort > myfile")); //< > |
+							runtest("stdin < cut -f1 | sort , myfile")); //< > |
 					assertArrayEquals(new Object[]{"pray to"}, 
 							runtest("pray to __/\\__"));
 				} else {

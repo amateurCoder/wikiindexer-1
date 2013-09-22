@@ -41,7 +41,7 @@ public class HyphenRuleTest extends TokenizerRuleTest {
 				assertArrayEquals(new Object[]{"12-B"}, runtest("12-B"));
 				assertArrayEquals(new Object[]{"6-6"}, runtest("6-6"));
 				assertArrayEquals(new Object[]{"D-BB3"}, runtest("D-BB3"));
-				assertArrayEquals(new Object[]{"week day"}, runtest("week-day"));
+				assertArrayEquals(new Object[]{"self-doubt."}, runtest("self-doubt."));
 				
 				//code style
 				assertArrayEquals(new Object[]{"c"}, runtest("c--"));

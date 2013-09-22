@@ -3,7 +3,6 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -78,7 +77,6 @@ public class IndexWriter implements Writeable {
 		} else if (INDEXFIELD.LINK.equals(keyField)) {
 			linkMap = new HashMap<Integer, List<Integer>>();
 		}
-
 	}
 
 	/**
@@ -140,7 +138,7 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, String value, int numOccurances)
 			throws IndexerException {
-
+		// TODO: Implement this method
 	}
 
 	/**
@@ -203,7 +201,6 @@ public class IndexWriter implements Writeable {
 			}
 		}
 	}
-
 	/**
 	 * Method to add a given key - value mapping to the index
 	 * 

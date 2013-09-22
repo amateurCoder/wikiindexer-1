@@ -44,7 +44,7 @@ public class PunctuationRuleTest extends TokenizerRuleTest {
 				assertArrayEquals(new Object[] {"Remove from sentence 1 Remove from sentence 2"},
 						runtest("Remove from sentence 1. Remove from sentence 2?"));
 				assertArrayEquals(new Object[] {"Remove from sentence 1 Remove from sentence 2"},
-						runtest("Remove from sentence 1. Remove from sentence 2!"));
+						runtest("Remove from sentence 1.  Remove from sentence 2!"));
 				assertArrayEquals(new Object[] {"Remove from sentence 1 Remove from sentence 2"},
 						runtest("Remove from sentence 1? Remove from sentence 2?"));
 				assertArrayEquals(new Object[] {"Remove from sentence 1 Remove from sentence 2"},

@@ -339,15 +339,11 @@ System.out.println("in parselinks");
 			e.printStackTrace();
 		}
 
-		// TODO: handling cases like [[Distinguished Service Medal (United
-		// Kingdom)|Distinguished Service Medal]] AND [[Redcliffe,
-		// Bristol|Redcliffe]]
 		// TODO Lang links - what to populate in Wikipedia document
 		// TODO Refactor regex expression to constants
 		// TODO Accented chars
 		// TODO Move RegEx in constants
 		// TODO what to do with LINK URl
-		// TODO Handle categories
 
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);
