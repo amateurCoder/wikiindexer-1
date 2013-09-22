@@ -4,19 +4,23 @@
 package edu.buffalo.cse.ir.wikiindexer.parsers.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
 
+import edu.buffalo.cse.ir.wikiindexer.FileUtil;
 import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
+import edu.buffalo.cse.ir.wikiindexer.test.PropertiesBasedTest;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
 
 /**
@@ -38,7 +42,8 @@ public class ParserTest {//extends PropertiesBasedTest {
 	private static final int[] numcategories = {8,6,4,5,13};
 	private static final String[] cattitles = {"1925 births","2005 deaths","English male singers",
 		"1949 establishments in the United Kingdom","Brentford F.C. players"};
-	/*public ParserTest(Properties props) {
+	
+/*	public ParserTest(Properties props) {
 		super(props);
 	}
 	*/
@@ -50,13 +55,13 @@ public class ParserTest {//extends PropertiesBasedTest {
 	 * @throws ParserConfigurationException 
 	 */
 	@Test
-	public final void testParse() throws ParserConfigurationException, SAXException, IOException {
+	public final void testParse() {
 //		Parser testClass = new Parser(idxProps);
 		Parser testClass = new Parser(null);
 		ArrayList<WikipediaDocument> list = new ArrayList<WikipediaDocument>();
 		
 		//null file
-		/*testClass.parse(null, list);
+		testClass.parse(null, list);
 		assertTrue(list.isEmpty());
 		
 		//empty filename
@@ -65,7 +70,7 @@ public class ParserTest {//extends PropertiesBasedTest {
 		
 		//invalid filename
 		testClass.parse("abc.xml", list);
-		assertTrue(list.isEmpty());*/
+		assertTrue(list.isEmpty());
 		
 		//five documents
 //		testClass.parse(FileUtil.getRootFilesFolder(idxProps) + "five_entries.xml", list);
@@ -79,27 +84,19 @@ public class ParserTest {//extends PropertiesBasedTest {
 		assertEquals(3, list.get(2).getSections().size());
 		assertEquals(1, list.get(3).getSections().size());
 		assertEquals(6, list.get(4).getSections().size());
-		/* TODO: Add structural test here */
-		Iterator<WikipediaDocument> iterator = list.iterator();
-		
-		/*for (WikipediaDocument temp : list) {
-			for(String c:temp.getCategories()){
-				System.out.println("C=" + c);
-			}
-			for(String c:temp.getLinks()){
-				System.out.println("L=" + c);
-			}
-		}*/
-		assertEquals(8, list.get(0).getCategories().size());
-		
-		assertEquals(33, list.get(0).getLinks().size());
-		
-		
-		
-		
-		
-	}
 
+		int cnt = 0;
+		for (WikipediaDocument doc : list) {
+			validateTitle(doc, cnt);
+			validateId(doc, cnt);
+			validateAuthor(doc, cnt);
+			validateDate(doc, cnt);
+			validateSections(doc,cnt);
+			validateCategories(doc, cnt);
+			//add links test
+			cnt++;
+		}
+	}
 
 	private void validateTitle(WikipediaDocument doc, int cnt) {
 		assertEquals(titles[cnt], doc.getTitle());

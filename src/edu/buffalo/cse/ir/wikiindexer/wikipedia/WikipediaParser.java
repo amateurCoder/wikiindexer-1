@@ -76,7 +76,7 @@ public class WikipediaParser {
 	 */
 	public static String parseTextFormatting(String text) {
 		if (null != text) {
-			return text.replaceAll("['{2}'{3}'{5}]", "");
+			return text.replaceAll("('{5}|'{3}|'{2})", "");
 		}
 		return null;
 	}
@@ -333,6 +333,7 @@ public class WikipediaParser {
 		// Kingdom)|Distinguished Service Medal]] AND [[Redcliffe,
 		// Bristol|Redcliffe]]
 		// TODO Lang links - what to populate in Wikipedia document
+		
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);
 		tempText = parseTagFormatting(tempText);
@@ -340,7 +341,6 @@ public class WikipediaParser {
 
 		// Fetching links
 
-		// TODO - Number 2 is omitted in the output
 		// Fetching Categories - case 15 & 16
 		pattern = Pattern.compile("\\[\\[:?Category:.*?\\]\\]");
 		matcher = pattern.matcher(tempText);
