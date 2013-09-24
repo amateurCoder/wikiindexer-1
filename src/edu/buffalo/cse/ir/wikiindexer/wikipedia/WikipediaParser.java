@@ -333,7 +333,11 @@ public class WikipediaParser {
 		// Kingdom)|Distinguished Service Medal]] AND [[Redcliffe,
 		// Bristol|Redcliffe]]
 		// TODO Lang links - what to populate in Wikipedia document
-		
+		// TODO Refactor regex expression to constants
+		// TODO Accented chars
+		// TODO Move RegEx in constants
+		// TODO what to do with LINK URl
+
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);
 		tempText = parseTagFormatting(tempText);
@@ -379,13 +383,13 @@ public class WikipediaParser {
 		if (sectionArr.length > 1) {
 			for (int i = 0; i < sectionArr.length; i++) {
 				if (i == 0) {
-//					System.out.println("Header " + "Default");
-//					System.out.println("Body " + sectionArr[i].trim());
+					// System.out.println("Header " + "Default");
+					// System.out.println("Body " + sectionArr[i].trim());
 					wikipediaDocument.addSection("Default",
 							sectionArr[i].trim());
 				} else {
-//					System.out.println("Header " + sectionArr[i].trim());
-//					System.out.println("Body " + sectionArr[i + 1].trim());
+					// System.out.println("Header " + sectionArr[i].trim());
+					// System.out.println("Body " + sectionArr[i + 1].trim());
 					wikipediaDocument.addSection(sectionArr[i].trim(),
 							sectionArr[i + 1].trim());
 					i = i + 1;
@@ -396,10 +400,10 @@ public class WikipediaParser {
 		else if (sectionArr.length == 1) {
 			for (int i = 0; i < sectionArr.length; i++) {
 				wikipediaDocument.addSection("Default", sectionArr[i].trim());
-//				System.out.println("Header " + "Default");
-//				System.out.println("Body " + sectionArr[i].trim());
+				// System.out.println("Header " + "Default");
+				// System.out.println("Body " + sectionArr[i].trim());
 			}
-			
+
 		}
 		return wikipediaDocument;
 	}

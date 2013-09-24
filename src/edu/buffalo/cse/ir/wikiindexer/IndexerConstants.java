@@ -22,7 +22,7 @@ public interface IndexerConstants {
 	}
 	
 	/* Total number of properties */
-	public static final int NUM_PROPERTIES = 4;
+	public static final int NUM_PROPERTIES = 14;
 	
 	/* Root directory */
 	@RequiredConstant
