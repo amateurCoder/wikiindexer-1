@@ -3,9 +3,10 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.tokenizer.test;
 
-import java.util.Properties;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
+import java.util.Properties;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

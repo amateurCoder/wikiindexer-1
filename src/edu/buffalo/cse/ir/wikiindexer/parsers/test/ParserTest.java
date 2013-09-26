@@ -65,8 +65,8 @@ public class ParserTest extends PropertiesBasedTest {
 	 */
 	@Test
 	public final void testParse() {
-		// Parser testClass = new Parser(idxProps);
-		Parser testClass = new Parser(null);
+		Parser testClass = new Parser(idxProps);
+//		Parser testClass = new Parser(null);
 		ArrayList<WikipediaDocument> list = new ArrayList<WikipediaDocument>();
 
 		// null file

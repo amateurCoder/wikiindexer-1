@@ -45,7 +45,9 @@ public class FileUtil {
 	public static Properties loadProperties(String filename) throws IOException {
 		Properties props = new Properties();
 		FileInputStream inStream = null;
+		//TODO: Remove Hard coding
 		inStream = new FileInputStream(filename);
+//		inStream = new FileInputStream("C:\\Sandbox\\wikiindexer-1\\files\\properties.config");
 		props.load(inStream);
 		inStream.close();
 		return props;

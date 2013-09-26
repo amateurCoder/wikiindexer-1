@@ -11,12 +11,19 @@ public class PunctuationRule implements TokenizerRule {
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
 			String token;
+			stream.previous();
 			while (stream.hasNext()) { 
 				token = stream.next();
-				if (token != null && token.matches("(.*?)[.?!].*")) {
-					token.replaceAll("[.?!]", "");
-					stream.set(token);
+				System.out.println("Incoming Token:" + token);
+				if(token!=null){
+					if (token.matches(".*?(\\.|\\?|!)")) {
+						token = token.replaceAll("(\\.|\\?|!)", "");
+						System.out.println("Outgoing Token:" + token);
+						stream.previous();
+						stream.set(token);
+					}
 				}
+				
 			}
 			stream.reset();
 		}

@@ -32,6 +32,7 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 	
 	private static Set<String> preTknRuleSet;
 	
+	// TODO: Remove hardcoding
 	public TokenizerRuleTest(Properties props, String constantName) {
 		super(props);
 		
@@ -42,8 +43,9 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 				preTknRuleSet = new HashSet<String>(Arrays.asList(splits));
 			}
 		}
-		
+		//TODO Remove hard coding
 		String className = idxProps.getProperty(constantName);
+//		String className = "edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.AccentRule";
 		if (className != null) {
 			try {
 				Class cls = Class.forName(className);

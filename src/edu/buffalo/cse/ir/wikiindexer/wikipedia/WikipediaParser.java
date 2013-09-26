@@ -337,6 +337,7 @@ public class WikipediaParser {
 		// TODO Accented chars
 		// TODO Move RegEx in constants
 		// TODO what to do with LINK URl
+		// TODO Handle categories
 
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);
