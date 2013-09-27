@@ -29,13 +29,13 @@ public class SpecialCharRule implements TokenizerRule {
 			}
 			if (finalToken != null) {
 				if (finalToken
-						.matches(".*?[~@#$%\\*=\\^&\\+-:;<>\\|_/\\\\\\(\\)]+.*?")) {
+						.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|_/\\\\\\(\\)]+.*?")) {
 					finalToken = finalToken.replaceAll(
 							"[~@#\\$%\\*=\\^\\&\\+:;<>\\|_/\\\\\\(\\)]+", " ");
 				}
-				if (finalToken.matches(".*?[a-zA-Z]*[^0-9]\\-[a-zA-Z]*.*")) {
+				/*if (finalToken.matches(".*?[a-zA-Z]*[^0-9]\\-[a-zA-Z]*.*")) {
 					finalToken = finalToken.replaceAll("\\-", " ");
-				}
+				}*/
 				tempArr = finalToken.trim().split(" +");
 				finalToken = "";
 

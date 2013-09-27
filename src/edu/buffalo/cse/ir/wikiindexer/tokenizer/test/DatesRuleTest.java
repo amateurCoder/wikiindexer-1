@@ -44,9 +44,9 @@ public class DatesRuleTest extends TokenizerRuleTest {
 					assertArrayEquals(
 							new Object[] { "The Academy operated until it was destroyed by Lucius Cornelius Sulla in -00840101" },
 							runtest("The Academy operated until it was destroyed by Lucius Cornelius Sulla in 84 BC"));
-//					assertArrayEquals(
-//							new Object[] { "For instance, the 19480101 ABL finalist Baltimore Bullets moved to the BAA and won that league's 19480101 title." },
-//							runtest("For instance, the 1948 ABL finalist Baltimore Bullets moved to the BAA and won that league's 1948 title."));
+					assertArrayEquals(
+							new Object[] { "For instance, the 19480101 ABL finalist Baltimore Bullets moved to the BAA and won that league's 19480101 title." },
+							runtest("For instance, the 1948 ABL finalist Baltimore Bullets moved to the BAA and won that league's 1948 title."));
 					assertArrayEquals(
 							new Object[] { "It was now about 10:15:00." },
 							runtest("It was now about 10:15 am."));
