@@ -21,7 +21,6 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 @RunWith(Parameterized.class)
 public class PunctuationRuleTest extends TokenizerRuleTest {
 	
-	//TODO Remove hard coding
 	public PunctuationRuleTest(Properties props) {
 		super(props, IndexerConstants.PUNCTUATIONRULE);
 	}
@@ -62,8 +61,8 @@ public class PunctuationRuleTest extends TokenizerRuleTest {
 						runtest("token","one.","token","two?"));
 				assertArrayEquals(new Object[] {"token","one","token","two"},
 						runtest("token","one!","token","two!"));
-//				assertArrayEquals(new Object[] {"token","one","token","a.out"},
-//						runtest("token","one!","token","a.out."));
+				assertArrayEquals(new Object[] {"token","one","token","two"},
+						runtest("token","one!","token","two?"));
 				assertArrayEquals(new Object[] {"token","one","token","two"},
 						runtest("token","one?","token","two?"));
 				
@@ -74,8 +73,8 @@ public class PunctuationRuleTest extends TokenizerRuleTest {
 						runtest("the","search","query","was","em?ty"));
 				
 				//mixed pos, neg, multiple
-//				assertArrayEquals(new Object[]{"Is","your","ip","address","192.168.10.124"}, 
-//						runtest("Is","your","ip","address","192.168.10.124?"));
+				assertArrayEquals(new Object[]{"Is","your","ip","address","192.168.10.124"}, 
+						runtest("Is","your","ip","address","192.168.10.124?"));
 				assertArrayEquals(new Object[]{"Your","query","'em?ty'","returned","0","results"}, 
 						runtest("Your","query","'em?ty'","returned","0","results!"));
 				assertArrayEquals(new Object[]{"Say", "what"},

@@ -20,22 +20,23 @@ public class ApostropheRule implements TokenizerRule {
 			{ "I'll", "I will" }, { "I'm", "I am" }, { "I've", "I have" },
 			{ "isn't", "is not" }, { "it's", "it is" }, { "let's", "let us" },
 			{ "mightn't", "might not" }, { "mustn't", "must not" },
-			{ "Put 'em", "Put them" }, { "shan't", "shall not" },
+			{ "put 'em", "put them" }, { "shan't", "shall not" },
 			{ "she'd", "she had" }, { "she'll", "she will" },
 			{ "she's", "she is" }, { "shouldn't", "should not" },
-			{ "that's", "that is" }, { "there's", "there is" },
-			{ "they'd", "they had" }, { "they'll", "they will" },
-			{ "they're", "they are" }, { "they've", "they have" },
-			{ "we'd", "we had" }, { "we're", "we are" },
-			{ "we've", "we have" }, { "weren't", "were not" },
-			{ "what'll", "what will" }, { "what're", "what are" },
-			{ "what's", "what is" }, { "what've", "what have" },
-			{ "where's", "where is" }, { "who'd", "who had" },
-			{ "who'll", "who will" }, { "who're", "who are" },
-			{ "who's", "who is" }, { "who've", "who have" },
-			{ "won't", "will not" }, { "wouldn't", "would not" },
-			{ "you'd", "you had" }, { "you'll", "you will" },
-			{ "you're", "you are" }, { "you've", "you have" }
+			{ "should've", "should have" }, { "that's", "that is" },
+			{ "there's", "there is" }, { "they'd", "they would" },
+			{ "they'll", "they will" }, { "they're", "they are" },
+			{ "they've", "they have" }, { "we'd", "we had" },
+			{ "we're", "we are" }, { "we've", "we have" },
+			{ "weren't", "were not" }, { "what'll", "what will" },
+			{ "what're", "what are" }, { "what's", "what is" },
+			{ "what've", "what have" }, { "where's", "where is" },
+			{ "who'd", "who had" }, { "who'll", "who will" },
+			{ "who're", "who are" }, { "who's", "who is" },
+			{ "who've", "who have" }, { "won't", "will not" },
+			{ "wouldn't", "would not" }, { "you'd", "you had" },
+			{ "you'll", "you will" }, { "you're", "you are" },
+			{ "you've", "you have" }
 
 	};
 
@@ -47,47 +48,73 @@ public class ApostropheRule implements TokenizerRule {
 		}
 	}
 
-	// TODO: Handle rest of the test cases i.e case sensitive data
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			String token = null, result = null;
+			String finalToken = "", token = null, result = null,tempResult="";
+			int nTokens=0;
 			stream.previous();
 			while (stream.hasNext()) {
+				nTokens++;
 				token = stream.next();
-				if (token != null) {
-					if (token.matches(".*?'.*?")) {
-						result = apostropheWithOmission.get(token);
-						if (result == null) {
-							// Matched simple Apostrophe
-							if (token.matches(".*?('s)( .*?){0,}")) {
-								token = token.replaceAll("('s)", "");
-								stream.previous();
-								stream.set(token);
-							} else if (token.matches(".*?(s'|')(.*?){0,}")) {
-								token = token.replaceAll("'", "");
-								stream.previous();
-								stream.set(token);
-							}
-						} else {
-							// Matched contraction
-							String[] tempArr = result.split(" ");
+				finalToken += token + " ";
+			}
+			stream.reset();
+			token = finalToken.trim();
+			if (token != null) {
+				if (token.matches(".*?'.*?")) {
+					String tempToken = token;
+					result = apostropheWithOmission.get(token);
+					if (result == null) {
+						tempResult = apostropheWithOmission
+								.get(tempToken.toLowerCase());
+						if (tempResult != null) {
+							tempResult = tempResult.substring(0, 1)
+									.toUpperCase() + tempResult.substring(1);
+							result=tempResult;
+						}
+					}
+					if (result == null || tempResult==null) {
+						// Matched simple Apostrophe
+						if (token.matches(".*?('s)( .*?){0,}")) {
+							token = token.replaceAll("('s)", "");
 							stream.previous();
-							for (int i = 0; i < tempArr.length; i++) {
-								if (stream.hasNext()) {
-									stream.set(tempArr[i]);
-									stream.next();
-								} else {
-									stream.append(tempArr[i]);
+							stream.set(token);
+						} else if (token.matches(".*?(s'|')(.*?){0,}")) {
+							token = token.replaceAll("'", "");
+							if(nTokens!=1){
+								String[] tempArr = token.split(" ");
+								for (int i = 0; i < tempArr.length; i++) {
+									if (stream.hasNext()) {
+										stream.set(tempArr[i]);
+										stream.next();
+									} else {
+										stream.append(tempArr[i]);
+									}
 								}
+							}else{
+								stream.previous();
+								stream.set(token);
 							}
 						}
-
+					} else {
+						// Matched contraction
+						String[] tempArr = result.split(" ");
+						stream.previous();
+						for (int i = 0; i < tempArr.length; i++) {
+							if (stream.hasNext()) {
+								stream.set(tempArr[i]);
+								stream.next();
+							} else {
+								stream.append(tempArr[i]);
+							}
+						}
 					}
+
 				}
 			}
 			stream.reset();
 		}
-	}
 
+	}
 }

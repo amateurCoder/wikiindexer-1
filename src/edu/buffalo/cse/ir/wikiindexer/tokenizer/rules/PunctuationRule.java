@@ -14,11 +14,14 @@ public class PunctuationRule implements TokenizerRule {
 			stream.previous();
 			while (stream.hasNext()) { 
 				token = stream.next();
-				System.out.println("Incoming Token:" + token);
 				if(token!=null){
-					if (token.matches(".*?(\\.|\\?|!)")) {
+					if(token.matches(".*?[a-zA-Z0-9]+\\.[a-zA-Z0-9]+\\.?[a-zA-Z0-9]*\\.?[a-zA-Z0-9]*(\\?|!)")){
+						token = token.replaceAll("(\\?|!)", "");
+						stream.previous();
+						stream.set(token);
+					}
+					else if (token.matches(".*?(\\.|\\?|!)")) {
 						token = token.replaceAll("(\\.|\\?|!)", "");
-						System.out.println("Outgoing Token:" + token);
 						stream.previous();
 						stream.set(token);
 					}
