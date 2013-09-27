@@ -22,7 +22,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 public class PunctuationRuleTest extends TokenizerRuleTest {
 	
 	//TODO Remove hard coding
-	public PunctuationRuleTest(Properties props, String constantName) {
+	public PunctuationRuleTest(Properties props) {
 		super(props, IndexerConstants.PUNCTUATIONRULE);
 	}
 	

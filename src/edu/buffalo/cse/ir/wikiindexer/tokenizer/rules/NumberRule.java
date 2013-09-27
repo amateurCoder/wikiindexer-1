@@ -25,24 +25,22 @@ public class NumberRule implements TokenizerRule {
 					}
 				}
 			}
-			for (int i = 0; i < 2; i++) {
-				if (finalToken != null) {
-					if (finalToken.matches(".*? [0-9]+[.,]*[0-9]*.*")) {
-						if (finalToken
-								.matches(".*?\\s+[0-9]+[\\.,]*[0-9]*\\s+.*")) {
-							finalToken = finalToken.replaceAll(
-									" [0-9]+[\\.,]*[0-9]* ", " ");
-						} else if (finalToken
-								.matches("(.*? [0-9]+[\\.,]*[0-9]*[^\\s].*|.*?[^\\s][0-9]+[\\.,]*[0-9]* .*)")) {
-							finalToken = finalToken.replaceAll(
-									"[0-9]+[\\.,]*[0-9]*", "");
-						}
+			if (finalToken != null) {
+				if (finalToken.matches(".*? [0-9]+[.,]*[0-9]*.*")) {
+					if (finalToken.matches(".*?\\s+[0-9]+[\\.,]*[0-9]*\\s+.*")) {
+						finalToken = finalToken.replaceAll(
+								" [0-9]+[\\.,]*[0-9]* ", " ");
+					}
+					if (finalToken
+							.matches("(.*? [0-9]+[\\.,]*[0-9]*[^\\s].*|.*?[^\\s][0-9]+[\\.,]*[0-9]* .*)")) {
+						finalToken = finalToken.replaceAll(
+								"[0-9]+[\\.,]*[0-9]*", "");
 					}
 				}
 			}
 			tempArr = finalToken.trim().split(" +");
 			finalToken = "";
-			//In case only single token is present in the stream
+			// In case only single token is present in the stream
 			if (nTokens == 1) {
 				for (int i = 0; i < (tempArr.length - 1); i++) {
 					if (i == (tempArr.length - 2)) {
@@ -55,7 +53,7 @@ public class NumberRule implements TokenizerRule {
 				stream.previous();
 				stream.set(finalToken);
 				stream.seekEnd();
-			//Multiple tokens in the stream
+				// Multiple tokens in the stream
 			} else if (nTokens > 1) {
 				stream.reset();
 				for (int i = 0; i < tempArr.length; i++) {

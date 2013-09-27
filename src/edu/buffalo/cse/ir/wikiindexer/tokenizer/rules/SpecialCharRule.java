@@ -7,7 +7,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
 @RuleClass(className = RULENAMES.SPECIALCHARS)
 public class SpecialCharRule implements TokenizerRule {
 
-	//TODO Execute commented out test case
+	// TODO Execute commented out test case
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
@@ -72,10 +72,9 @@ public class SpecialCharRule implements TokenizerRule {
 					while (stream.hasNext()) {
 						stream.remove();
 					}
-					stream.reset();
 				}
 			}
-
+			stream.reset();
 		}
 	}
 }

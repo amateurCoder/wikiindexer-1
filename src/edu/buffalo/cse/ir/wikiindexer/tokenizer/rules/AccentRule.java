@@ -1,7 +1,9 @@
 package edu.buffalo.cse.ir.wikiindexer.tokenizer.rules;
 
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
@@ -10,7 +12,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
 @RuleClass(className = RULENAMES.ACCENTS)
 public class AccentRule implements TokenizerRule {
 
-	Map<String, String> accentMap;
+	/*Map<String, String> accentMap;
 	String[][] accentList = { { "\u00C0", "A" }, { "\u00C1", "A" },
 			{ "\u00C2", "A" }, { "\u00C3", "A" }, { "\u00C4", "A" },
 			{ "\u00C5", "A" }, { "\u00C6", "AE" }, { "\u00C7", "C" },
@@ -35,23 +37,35 @@ public class AccentRule implements TokenizerRule {
 			{ "\u00FA", "u" }, { "\u00FB", "u" }, { "\u00FC", "u" },
 			{ "\u00FD", "y" }, { "\u00FF", "y" }, { "\uFB00", "ff" },
 			{ "\uFB01", "fi" }, { "\uFB02", "fl" }, { "\uFB03", "ffi" },
-			{ "\uFB04", "ffl" }, { "\uFB05", "ft" }, { "\uFB06", "st" } };
+			{ "\uFB04", "ffl" }, { "\uFB05", "ft" }, { "\uFB06", "st" } };*/
 
-	public AccentRule() {
+	/*public AccentRule() {
 		accentMap = new HashMap<String, String>();
 		// Copying from Array to Map
 		for (int i = 0; i < accentList.length; i++) {
 			accentMap.put(accentList[i][0], accentList[i][1]);
 		}
-	}
+	}*/
 
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
-		// TODO Auto-generated method stub
-// TODO : code is similar to ApostropheRule
-		
-		
-		
+		// TODO : execute failing test case
+		if (stream != null) {
+			String token = "", result = "";
+			stream.previous();
+			while (stream.hasNext()) {
+				token = stream.next();
+				System.out.println("Normalize:"+token);
+				result = Normalizer.normalize(token, Normalizer.Form.NFD);
+				Pattern pattern = Pattern
+						.compile("\\p{InCombiningDiacriticalMarks}+");
+				token = pattern.matcher(result).replaceAll("");
+				System.out.println("Result:" + token);
+				stream.previous();
+				stream.set(token);
+				stream.next();
+			}
+			stream.reset();
+		}
 	}
-
 }
