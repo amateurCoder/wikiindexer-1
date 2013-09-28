@@ -112,14 +112,11 @@ public class Runner {
 		try {
 			synchronized (queue) {
 				while (queue.isEmpty()) {
-					
-					Thread.sleep(15);
+					Thread.sleep(1500);
 				}
-
 			}
 
 			tokenizeAndIndex(properties, queue);
-			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,19 +131,15 @@ public class Runner {
 		 * 		2. For each runner, initialize the tokenizer as needed
 		 * 		3. Keep calling and putting as required
 		 */
-		System.out.println("in tokenizer and indexer");
 		ExecutorService threadPool = Executors.newFixedThreadPool(Integer.valueOf(properties.get(IndexerConstants.NUM_TOKENIZER_THREADS).toString()));
 		CompletionService<IndexableDocument> pool = new ExecutorCompletionService<IndexableDocument>(threadPool);
 		new Thread(new TokenizerRunner(queue, pool, properties)).start();
-		System.out.println("after making thread");
-		
+
 		synchronized (numDocs) {
 			while (numDocs < 5) {
 				Thread.sleep(1500);
 			}
 		}
-		
-		System.out.println("number of documents in queue: " + numDocs);
 
 		IndexableDocument idoc;
 		SharedDictionary docDict = new SharedDictionary(properties, INDEXFIELD.LINK);
@@ -330,7 +323,6 @@ public class Runner {
 			this.coll = collection;
 			 parser = new Parser(props);
 			 try {
-				 System.out.println("in parse rnnner");
 				recEnd =  new WikipediaDocument(-9999, "2199-12-31T00:00:00Z", "DUMMY", "DUMMY");
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -339,12 +331,8 @@ public class Runner {
 		}
 
 		public void run() {
-			System.out.println("in run");
 			parser.parse(FileUtil.getDumpFileName(idxProps), coll);
-			
-			
 			((ConcurrentLinkedQueue<WikipediaDocument>) coll).offer(recEnd); //end of record
-			
 		}
 
 	}
@@ -361,7 +349,6 @@ public class Runner {
 		}
 
 		public void run() {
-			System.out.println("In tokenize runner");
 			WikipediaDocument doc;
 			Map<INDEXFIELD, Tokenizer> tknizerMap;
 			while (true) {
@@ -378,13 +365,10 @@ public class Runner {
 					if ("DUMMY".equals(doc.getTitle()) && "DUMMY".equals(doc.getAuthor())) {
 						break; //all done
 					} else {
-						System.out.println(numDocs);
 						tknizerMap = initMap(properties);
 						pool.submit(new DocumentTransformer(tknizerMap, doc));
-						
 						synchronized (numDocs) {
 							numDocs++;
-							
 						}
 					}
 				}

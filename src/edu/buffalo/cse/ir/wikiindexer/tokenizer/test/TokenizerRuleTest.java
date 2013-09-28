@@ -42,8 +42,9 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 				preTknRuleSet = new HashSet<String>(Arrays.asList(splits));
 			}
 		}
-		
+		//TODO Remove hard coding
 		String className = idxProps.getProperty(constantName);
+//		String className = "edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.DatesRule";
 		if (className != null) {
 			try {
 				Class cls = Class.forName(className);
@@ -98,6 +99,6 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 		
 		rule.apply(stream);
 		Collection<String> strtokens = stream.getAllTokens();
-		return (strtokens != null) ? strtokens.toArray() : null;
+		return (strtokens != null) ? strtokens.toArray() : new Object[]{};
 	}
 }

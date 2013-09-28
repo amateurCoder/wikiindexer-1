@@ -3,9 +3,10 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.tokenizer.test;
 
-import java.util.Properties;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
-import static org.junit.Assert.*;
+import java.util.Properties;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 @RunWith(Parameterized.class)
 public class WhitespaceRuleTest extends TokenizerRuleTest {
 
-	public WhitespaceRuleTest(Properties props, String constantName) {
+	public WhitespaceRuleTest(Properties props) {
 		super(props, IndexerConstants.WHITESPACERULE);
 	}
 	
