@@ -23,7 +23,7 @@ public class SingleIndexerRunner {
 	private SharedDictionary docDict;
 	private boolean lookupBoth;
 	private RunnerThread thr;
-	
+
 	/**
 	 * 
 	 * @param props
@@ -38,9 +38,9 @@ public class SingleIndexerRunner {
 		lookupBoth = (keyfield == INDEXFIELD.LINK);
 		pvtQueue = new ConcurrentLinkedQueue<Object[]>();
 		thr = new RunnerThread();
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param docid
@@ -54,26 +54,33 @@ public class SingleIndexerRunner {
 		for (Entry<String, Integer> etr : map.entrySet()) {
 			key = etr.getKey();
 			value = etr.getValue();
-			arrObj = new Object[3];
-			
-			if (lookupBoth) {
-				arrObj[0] = docid;
-				arrObj[1] = docDict.lookup(key);
-			} else {
-				arrObj[0] = key;
-				arrObj[1] = docid;
-			}
-			
-			arrObj[2] = value;
-			pvtQueue.add(arrObj);
-			
-			if (!thr.isRunning) {
-				thr.isRunning = true;
-				new Thread(thr).start();
+
+			if (key != null) {
+				arrObj = new Object[3];
+
+				if (lookupBoth) {
+					arrObj[0] = docid;
+					arrObj[1] = docDict.lookup(key);
+				} else {
+					arrObj[0] = key;
+					arrObj[1] = docid;
+				}
+
+				arrObj[2] = value;
+				pvtQueue.add(arrObj);
+
+				if (!thr.isRunning) {
+					thr.isRunning = true;
+					new Thread(thr).start();
+				}
 			}
 		}
 	}
-	
+
+	protected boolean isFinished() {
+		return thr.isComplete && thr.isQueueEmpty();
+	}
+
 	/**
 	 * 
 	 * @throws IndexerException
@@ -81,7 +88,7 @@ public class SingleIndexerRunner {
 	protected void cleanup() throws IndexerException {
 		thr.setComplete();
 	}
-	
+
 	/**
 	 * 
 	 * @author nikhillo
@@ -90,21 +97,27 @@ public class SingleIndexerRunner {
 	private class RunnerThread implements Runnable {
 		private boolean isComplete;
 		private boolean isRunning;
-		
+
 		/**
 		 * 
 		 */
 		private RunnerThread() {
-			
+
 		}
-		
+
 		/**
 		 * 
 		 */
 		private void setComplete() {
 			isComplete = true;
 		}
-		
+
+		private boolean isQueueEmpty() {
+			synchronized (pvtQueue) {
+				return pvtQueue.isEmpty();
+			}
+		}
+
 		/**
 		 * 
 		 */

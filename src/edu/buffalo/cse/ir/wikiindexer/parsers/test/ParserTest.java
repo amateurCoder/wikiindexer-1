@@ -58,15 +58,16 @@ public class ParserTest extends PropertiesBasedTest {
 	 * Test method for
 	 * {@link edu.buffalo.cse.ir.wikiindexer.parsers.Parser#parse(java.lang.String, java.util.Collection)}
 	 * .
+	 * @throws Exception 
 	 * 
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
 	@Test
-	public final void testParse() {
-		// Parser testClass = new Parser(idxProps);
-		Parser testClass = new Parser(null);
+	public final void testParse() throws Exception {
+		Parser testClass = new Parser(idxProps);
+		//Parser testClass = new Parser(null);
 		ArrayList<WikipediaDocument> list = new ArrayList<WikipediaDocument>();
 
 		// null file
@@ -84,8 +85,7 @@ public class ParserTest extends PropertiesBasedTest {
 		// five documents
 		testClass.parse(FileUtil.getRootFilesFolder(idxProps)
 				+ "five_entries.xml", list);
-		// testClass.parse("C:/Sandbox/wikiindexer/files/five_entries.xml",
-		// list);
+		
 		assertEquals(5, list.size());
 
 		assertEquals(8, list.get(0).getSections().size());

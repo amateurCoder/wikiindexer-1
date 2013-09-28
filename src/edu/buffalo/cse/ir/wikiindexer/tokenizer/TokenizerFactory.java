@@ -6,6 +6,7 @@ package edu.buffalo.cse.ir.wikiindexer.tokenizer;
 import java.util.Properties;
 
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.*;
 
 /**
  * Factory class to instantiate a Tokenizer instance
@@ -45,6 +46,7 @@ public class TokenizerFactory {
 	 * Method to get a fully initialized tokenizer for a given field type
 	 * @param field: The field for which to instantiate tokenizer
 	 * @return The fully initialized tokenizer
+	 * @throws TokenizerException 
 	 */
 	public Tokenizer getTokenizer(INDEXFIELD field) {
 		//TODO: Implement this method
@@ -58,6 +60,33 @@ public class TokenizerFactory {
 		 * 		return new TOkenizer(new R1(), new R2(), new R3(), new R4(), new R5())
 		 * ... etc
 		 */
+		
+		try {
+			if(field.toString().equalsIgnoreCase("AUTHOR"))
+			{
+				return new Tokenizer(new CapitalizationRule());
+			
+			}
+			if(field.toString().equalsIgnoreCase("LINK"))
+			{
+				return new Tokenizer(new CapitalizationRule());
+			
+			}
+			if(field.toString().equalsIgnoreCase("CATEGORY"))
+			{
+				return new Tokenizer(new CapitalizationRule());
+			
+			}
+			if(field.toString().equalsIgnoreCase("LINK"))
+			{
+				return new Tokenizer(new CapitalizationRule());
+			
+			}
+		} catch (TokenizerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 }

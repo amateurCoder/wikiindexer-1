@@ -3,16 +3,26 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author nikhillo
  * An abstract class that represents a dictionary object for a given index
  */
 public abstract class Dictionary implements Writeable {
+	protected static Map<String,Integer> termDictionary;
 	public Dictionary (Properties props, INDEXFIELD field) {
 		//TODO Implement this method
+		termDictionary = new HashMap<String,Integer>();
 	}
 	
 	/* (non-Javadoc)
@@ -40,6 +50,10 @@ public abstract class Dictionary implements Writeable {
 	 */
 	public boolean exists(String value) {
 		//TODO Implement this method
+		if(termDictionary.get(value)!=null)
+		{
+			return true;
+		}
 		return false;
 	}
 	
@@ -53,6 +67,34 @@ public abstract class Dictionary implements Writeable {
 	 */
 	public Collection<String> query(String queryStr) {
 		//TODO: Implement this method (FOR A BONUS)
+		ArrayList<String> keyMatches = new ArrayList<String>();
+		
+		Iterator<String> keyIterator = keyMatches.iterator();
+		Set<String>keySet = termDictionary.keySet();
+		
+		Pattern queryPattern = Pattern.compile(queryStr);
+		
+		Iterator<String> setIterator = keySet.iterator();
+		
+		while(setIterator.hasNext())
+		{
+			String key = setIterator.next();
+			Matcher m=queryPattern.matcher(key);
+			
+			if(m.matches())
+			{
+				keyMatches.add(key);
+			}
+			
+		}
+		System.out.println("The keys found matcing the query are : \n" );
+		while(keyIterator.hasNext())
+		{
+			System.out.println(keyIterator.next()+"\n");
+		}
+		
+		
+		
 		return null;
 	}
 	
@@ -62,6 +104,8 @@ public abstract class Dictionary implements Writeable {
 	 */
 	public int getTotalTerms() {
 		//TODO: Implement this method
-		return -1;
+		return termDictionary.size();
+		
+		
 	}
 }

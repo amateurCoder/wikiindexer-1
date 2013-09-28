@@ -3,8 +3,11 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.wikipedia;
 
+import java.util.HashMap;
+
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.Tokenizer;
 
 /**
  * A simple map based token view of the transformed document
@@ -15,8 +18,16 @@ public class IndexableDocument {
 	/**
 	 * Default constructor
 	 */
-	public IndexableDocument() {
+	private static int docCount=0;
+	private String docId;
+	
+	private HashMap<INDEXFIELD, TokenStream> indexMap;
+	public IndexableDocument() 
+	{
 		//TODO: Init state as needed
+		 docId=Integer.toString(docCount);
+		 docCount++;
+		 indexMap = new HashMap<INDEXFIELD, TokenStream>(INDEXFIELD.values().length);
 	}
 	
 	/**
@@ -25,8 +36,17 @@ public class IndexableDocument {
 	 * @param field: The field to be added
 	 * @param stream: The stream to be added.
 	 */
-	public void addField(INDEXFIELD field, TokenStream stream) {
+	public void addField(INDEXFIELD field, TokenStream stream) 
+	{
 		//TODO: Implement this method
+		
+		if(indexMap.get(field)!=null)
+		{
+			System.out.println("in addfield");
+			indexMap.get(field).merge(stream);
+		}
+		else
+			indexMap.put(field, stream);
 	}
 	
 	/**
@@ -34,8 +54,14 @@ public class IndexableDocument {
 	 * @param key: The field for which the stream is requested
 	 * @return The underlying stream if the key exists, null otherwise
 	 */
-	public TokenStream getStream(INDEXFIELD key) {
+	public TokenStream getStream(INDEXFIELD key)
+	{
 		//TODO: Implement this method
+		if(indexMap.get(key)!=null)
+		{
+			
+			return indexMap.get(key);
+		}
 		return null;
 	}
 	
@@ -47,7 +73,10 @@ public class IndexableDocument {
 	 */
 	public String getDocumentIdentifier() {
 		//TODO: Implement this method
-		return null;
+		
+		
+		return docId;
+		
 	}
 	
 }

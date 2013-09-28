@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -24,6 +25,12 @@ public class IndexWriter implements Writeable {
 	 * @param keyField: The index field that is the key for this index
 	 * @param valueField: The index field that is the value for this index
 	 */
+	private static Properties indexProp;
+	private static Map<String,Integer> authMap;
+	private static Map<String,Integer> categoryMap;
+	private static Map<String,Integer> termMap;
+	private static Map<Integer,Integer> linkMap;
+	
 	public IndexWriter(Properties props, INDEXFIELD keyField, INDEXFIELD valueField) {
 		this(props, keyField, valueField, false);
 	}
@@ -44,6 +51,7 @@ public class IndexWriter implements Writeable {
 	 */
 	public IndexWriter(Properties props, INDEXFIELD keyField, INDEXFIELD valueField, boolean isForward) {
 		//TODO: Implement this method
+		
 	}
 	
 	/**

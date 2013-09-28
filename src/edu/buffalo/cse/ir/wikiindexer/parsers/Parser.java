@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.parsers;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Properties;
@@ -14,6 +15,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import edu.buffalo.cse.ir.wikiindexer.FileUtil;
+import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
 
 /**
@@ -31,6 +34,7 @@ public class Parser {
 	 */
 	public Parser(Properties idxProps) {
 		props = idxProps;
+		
 	}
 
 	/* TODO: Implement this method */
@@ -38,33 +42,50 @@ public class Parser {
 	 * 
 	 * @param filename
 	 * @param docs
+	 * @throws Exception 
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 */
-	public void parse(String filename, Collection<WikipediaDocument> docs) {
-		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-		SAXParser saxParser;
-		try {
-			saxParser = saxParserFactory.newSAXParser();
+	public void parse(String filename, Collection<WikipediaDocument> docs){
 		
-		/*DefaultHandler handler = new DefaultHandler();
-		saxParser.parse(filename, handler);*/
-		
-		XMLReader xmlReader;
-		
-		xmlReader = saxParser.getXMLReader();
-		
-		xmlReader.setContentHandler(new WikipediaSaxParser(props,docs));
-	
-		xmlReader.parse(filename);
-		}catch (IOException | SAXException e) {
-			// TODO Auto-generated catch block
+		System.out.println("in parse");
+			SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+			SAXParser saxParser;
+			try {
+				saxParser = saxParserFactory.newSAXParser();
+			
+			/*DefaultHandler handler = new DefaultHandler();
+			saxParser.parse(filename, handler);*/
+			
+			XMLReader xmlReader;
+			
+			xmlReader = saxParser.getXMLReader();
+			
+			xmlReader.setContentHandler(new WikipediaSaxParser(props,docs));
+			if(filename!=null&&filename!="")
+			{
+				if((FileUtil.getRootFilesFolder(props)
+						+ props.getProperty(IndexerConstants.DUMP_FILENAME)).equals(filename))
+				{
+					
+					xmlReader.parse(filename);
+				}
+			
+			}
+			
+				
+			}catch (IOException | SAXException e) {
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+			
+		}
+		
+			
+			
+		
+		
 	}
 
 	/**
@@ -80,6 +101,8 @@ public class Parser {
 	 */
 	protected synchronized void add(WikipediaDocument doc,
 			Collection<WikipediaDocument> documents) {
+		
 		documents.add(doc);
+		 
 	}
 }

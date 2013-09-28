@@ -3,6 +3,8 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -18,9 +20,12 @@ public class SharedDictionary extends Dictionary {
 	 * @param props: The properties file
 	 * @param field: The field being indexed by this dictionary
 	 */
+	
+	private static int docId;
 	public SharedDictionary(Properties props, INDEXFIELD field) {
 		super(props, field);
 		// TODO Add more code here if needed
+		
 	}
 	
 	/**
@@ -34,7 +39,19 @@ public class SharedDictionary extends Dictionary {
 	 */
 	public synchronized int lookup(String value) {
 		//TODO Implement this method
-		return -1;
+		
+		if(termDictionary.get(value)!=null)
+		{
+			return termDictionary.get(value);
+		}
+		else
+		{
+			termDictionary.put(value,docId);
+			docId++;
+			return termDictionary.get(value);
+		}
+		
+		
 	}
 
 }

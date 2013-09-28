@@ -2,7 +2,8 @@ package edu.buffalo.cse.ir.wikiindexer.tokenizer.rules;
 
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
-
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
+@RuleClass(className = RULENAMES.SPECIALCHARS)
 public class SpecialCharsRule implements TokenizerRule {
 
 	@Override

@@ -65,6 +65,7 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	public void endElement(String uri, String localname, String tagName)
 			throws SAXException {
 		if (("title").equalsIgnoreCase(tagName)) {
+			
 			boolTitle = false;
 		} else if (("id").equalsIgnoreCase(tagName)) {
 			boolId = false;
@@ -84,6 +85,7 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 			WikipediaParser wikipediaParser = new WikipediaParser(title, id,
 					timestamp, ipOrUsername, textBuffer.toString());
 			wikipediaDocument = wikipediaParser.getWikipediaDocument();
+			
 			add(wikipediaDocument, wikiDocs);
 		}
 	}
@@ -123,6 +125,7 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		// TODO Auto-generated method stub
+		System.out.println("in start document");
 
 	}
 

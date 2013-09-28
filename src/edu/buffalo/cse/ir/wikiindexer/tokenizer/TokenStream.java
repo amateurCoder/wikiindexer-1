@@ -2,10 +2,19 @@
  * 
  */
 package edu.buffalo.cse.ir.wikiindexer.tokenizer;
+/**
+ * 
+ */
 
+
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
+
 
 /**
  * This class represents a stream of tokens as the name suggests.
@@ -19,8 +28,17 @@ public class TokenStream implements Iterator<String>{
 	 * Default constructor
 	 * @param bldr: THe stringbuilder to seed the stream
 	 */
+	
+	private ArrayList<String> collStream ;
+	private ListIterator<String> iterator ;
+	private String stream;
+	private Map<String,Integer> countMap;
 	public TokenStream(StringBuilder bldr) {
+	
+		
 		//TODO: Implement this method
+		
+		collStream.add(bldr.toString());
 	}
 	
 	/**
@@ -29,6 +47,21 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public TokenStream(String string) {
 		//TODO: Implement this method
+		
+		
+		if(null!=string && string.length()>0)
+		{
+			collStream = new ArrayList<String>();
+			iterator = collStream.listIterator();
+			countMap=new HashMap<String,Integer>();
+			countMap.put(string, 1);
+			iterator.add(string);
+			
+		}
+		else
+			collStream=null;
+	
+			
 	}
 	
 	/**
@@ -37,6 +70,38 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public void append(String... tokens) {
 		//TODO: Implement this method
+	if(null!=tokens)
+		{
+		for(String value : tokens)
+		{
+			if(value != null && value.length() > 0)
+			{
+				iterator.add(value);
+				
+				if(countMap.get(value)==null)
+				{
+					
+				countMap.put(value,1);
+				//iterator.add(value);
+				}
+				else
+				{
+					int count= countMap.get(value).intValue();
+					count++;
+					countMap.put(value,count);
+					//iterator.add(value);
+				}
+				
+				
+			}
+			
+		}
+		
+		iterator=collStream.listIterator();//reset
+		
+		}
+		
+		
 	}
 	
 	/**
@@ -47,6 +112,10 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public Map<String, Integer> getTokenMap() {
 		//TODO: Implement this method
+		if(countMap!=null)
+			return countMap;
+		else
+			
 		return null;
 	}
 	
@@ -58,7 +127,11 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public Collection<String> getAllTokens() {
 		//TODO: Implement this method
-		return null;
+		
+		
+			return collStream;
+		
+		
 	}
 	
 	/**
@@ -68,7 +141,15 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public int query(String token) {
 		//TODO: Implement this method
-		return -1;
+		
+		if(countMap!=null)
+		{
+		if(countMap.get(token)!=null)
+			return countMap.get(token).intValue();
+			
+			
+		}
+		return 0;
 	}
 	
 	/**
@@ -77,6 +158,15 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public boolean hasNext() {
 		// TODO: Implement this method
+		if(null!=iterator)
+		{
+			if(iterator.hasNext())
+				return true;
+			else
+				return false;
+			
+					
+		}
 		return false;
 	}
 	
@@ -86,6 +176,15 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public boolean hasPrevious() {
 		//TODO: Implement this method
+		if(null!=iterator)
+		{
+			if(iterator.hasPrevious())
+				return true;
+			else
+				return false;
+			
+					
+		}
 		return false;
 	}
 	
@@ -97,7 +196,17 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public String next() {
 		// TODO: Implement this method
-		return null;
+		
+		if(null!=collStream)
+		{	
+			
+				if(iterator.hasNext())
+				return iterator.next();			
+				else
+					return null;
+		}
+			else
+				return null;
 	}
 	
 	/**
@@ -108,7 +217,17 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public String previous() {
 		//TODO: Implement this method
-		return null;
+		
+		if(null!=collStream)
+		{	
+				if(iterator.hasPrevious())
+				
+				return iterator.previous();			
+				else
+					return null;
+		}
+			else
+				return null;
 	}
 	
 	/**
@@ -116,6 +235,25 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public void remove() {
 		// TODO: Implement this method
+		if(null!=iterator)
+		{
+		if(iterator.hasNext())
+		{
+			String temp=iterator.next();
+			int count=countMap.get(temp).intValue()-1;
+			if(count==0)
+				countMap.remove(temp);
+			else
+				countMap.put(temp, count);
+			
+			iterator.previous();	
+			iterator.remove();
+			
+			
+		}
+		
+		
+		}
 		
 	}
 	
@@ -127,6 +265,46 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public boolean mergeWithPrevious() {
 		//TODO: Implement this method
+		if(null!=iterator)
+		{
+			if(iterator.hasPrevious()&& collStream.size()>1)
+			{
+				String temp_1= iterator.previous();
+				
+				iterator.remove();
+				String temp_2= iterator.next();
+				iterator.set(temp_1+" "+temp_2);
+				iterator.previous();
+				// to reduce the count for temp1 and temp2 also to add tamp1_temp2 to map
+				int count_1=countMap.get(temp_1).intValue()-1;
+				int count_2=countMap.get(temp_2).intValue()-1;
+				if(count_1==0)
+					countMap.remove(temp_1);
+				else
+					countMap.put(temp_1, count_1);
+				if(count_2==0)
+					countMap.remove(temp_2);
+				else
+					countMap.put(temp_2, count_1);
+				if(countMap.get(temp_1+" "+temp_2)==null)
+				{
+					
+				countMap.put(temp_1+" "+temp_2,1);
+				
+				}
+				else
+				{
+					int count= countMap.get(temp_1+" "+temp_2).intValue();
+					count++;
+					countMap.put(temp_1+" "+temp_2,count);
+					
+				}
+				
+				return true;
+		}
+			return false;
+		}
+		
 		return false;
 	}
 	
@@ -138,6 +316,44 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public boolean mergeWithNext() {
 		//TODO: Implement this method
+		
+		if(null!=iterator)
+		{
+			if(iterator.hasNext()&& collStream.size()>1)
+			{
+				String temp_1 = iterator.next();
+				iterator.remove();
+				String temp_2=iterator.next();
+				iterator.set(temp_1+" "+temp_2);	
+				iterator.previous();
+				
+				int count_1=countMap.get(temp_1).intValue()-1;
+				int count_2=countMap.get(temp_2).intValue()-1;
+				if(count_1==0)
+					countMap.remove(temp_1);
+				else
+					countMap.put(temp_1, count_1);
+				if(count_2==0)
+					countMap.remove(temp_2);
+				else
+					countMap.put(temp_2, count_1);
+				if(countMap.get(temp_1+" "+temp_2)==null)
+				{
+					
+				countMap.put(temp_1+" "+temp_2,1);
+				
+				}
+				else
+				{
+					int count= countMap.get(temp_1+" "+temp_2).intValue();
+					count++;
+					countMap.put(temp_1+" "+temp_2,count);
+					
+				}
+				return true;
+			}
+		return false;
+		}
 		return false;
 	}
 	
@@ -151,6 +367,30 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public void set(String... newValue) {
 		//TODO: Implement this method
+		if(null!=iterator)
+		{
+			if(null!=newValue[0]&& newValue[0]!="" && iterator.hasNext())
+			{	
+				iterator.next();
+				iterator.previous();
+				iterator.set(newValue[0]);
+			}
+			for(int i=1; i<newValue.length;i++)
+			{
+				
+			if(null!=newValue[i]&& newValue[i]!="" && iterator.hasNext())
+			{	
+				
+				
+				//iterator.previous();
+				iterator.next();
+				iterator.add(newValue[i]);
+				iterator.previous();
+			}
+			
+			}
+		}
+			
 	}
 	
 	/**
@@ -159,13 +399,27 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public void reset() {
 		//TODO: Implement this method
+		if(null!=iterator)
+	iterator=collStream.listIterator();
 	}
+	
 	
 	/**
 	 * Iterator method: Method to set the iterator to beyond the last token in the stream
 	 * previous must be called to get a token
 	 */
-	public void seekEnd() {
+	public void seekEnd()
+	
+	{
+		if(null!=iterator)	
+		{
+		while(iterator.hasNext())
+			iterator.next();
+		}
+		
+		
+		
+		
 		
 	}
 	
@@ -175,5 +429,34 @@ public class TokenStream implements Iterator<String>{
 	 */
 	public void merge(TokenStream other) {
 		//TODO: Implement this method
+		
+		if(this.hasNext())
+		{
+			if(other!=null)
+			{
+				
+				Collection<String> tempColl = other.getAllTokens();
+				if (null!=tempColl)
+				{
+				Iterator<String> it2 = tempColl.iterator();
+				while(it2.hasNext())
+				{
+					this.seekEnd();
+					this.append(it2.next());
+				}
+					
+				
+				}
+				
+				
+			}
+			
+		}
+		else
+			this.collStream= other.collStream;
+			
 	}
+	
+	
+	
 }

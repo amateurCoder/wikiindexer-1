@@ -65,7 +65,9 @@ public class Tokenizer {
 	 */
 	public void tokenize(TokenStream stream) throws TokenizerException {
 		for (TokenizerRule rule : tRules) {
+			
 			rule.apply(stream);
+		
 		}
 	}
 	

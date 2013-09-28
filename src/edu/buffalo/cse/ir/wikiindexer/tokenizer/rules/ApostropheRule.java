@@ -9,6 +9,8 @@ public class ApostropheRule implements TokenizerRule {
 
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
+System.out.println("in apostrphe");
+		
 		if (stream != null) {
 			String token;
 			while (stream.hasNext()) {
