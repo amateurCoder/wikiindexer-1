@@ -50,10 +50,10 @@ public class CapitalizationRuleTest extends TokenizerRuleTest {
 							runtest("San", "Francisco", "is", "in", "California."));
 					assertArrayEquals(
 							new Object[] { "some", "bodily", "fluids,", "such",
-									"as", "saliva", "and", "tears,", "do", "not",
+									"as", "saliva and ankit", "and", "tears,", "do", "not",
 									"transmit", "HIV" },
 							runtest("Some", "bodily", "fluids,", "such", "as",
-									"saliva", "and", "tears,", "do", "not",
+									"saliva and ankit", "and", "tears,", "do", "not",
 									"transmit", "HIV"));
 					assertArrayEquals(
 							new Object[] { "it", "runs", "Apple's", "iOS",

@@ -57,8 +57,8 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 							runtest("pray to __/\\__"));
 				} else {
 					//special symbols one by one
-					assertArrayEquals(new Object[]{"destructor","is","method"}, 
-							runtest("destructor","is","~method()")); //tilda, brackets
+					assertArrayEquals(new Object[]{"destructor hello","is","method"}, 
+							runtest("destructor hello","is","~method()")); //tilda, brackets
 					assertArrayEquals(new Object[]{"email","is","test","buffalo.edu"}, 
 							runtest("email","is","test@buffalo.edu")); //@
 					assertArrayEquals(new Object[]{"call","555-5555"}, 

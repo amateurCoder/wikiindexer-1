@@ -1,7 +1,11 @@
 package edu.buffalo.cse.ir.wikiindexer.tokenizer.rules;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.EnglishStemmer.Stemmer;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
 
 @RuleClass(className = RULENAMES.SPECIALCHARS)
@@ -11,68 +15,61 @@ public class SpecialCharRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			String token = "", finalToken = "";
+			String token = "",finalToken="";
 			String[] tempArr;
-			int nTokens = 0;
-			stream.previous();
-			// Accumulating all the tokens in the stream
-			while (stream.hasNext()) {
-				nTokens++;
+			int nTokens = 0, i = 0, count = 0;
+			nTokens = stream.getAllTokens().size();
+			// stream.previous();
+			stream.reset();
+			while (count < nTokens) {
 				token = stream.next();
 				if (token != null) {
-					if (stream.hasNext()) {
-						finalToken += token + " ";
-					} else {
-						finalToken += token;
-					}
-				}
-			}
-			if (finalToken != null) {
-				if (finalToken
-						.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|_/\\\\\\(\\)]+.*?")) {
-					finalToken = finalToken.replaceAll(
-							"[~@#\\$%\\*=\\^\\&\\+:;<>\\|_/\\\\\\(\\)]+", " ");
-				}
-				/*if (finalToken.matches(".*?[a-zA-Z]*[^0-9]\\-[a-zA-Z]*.*")) {
-					finalToken = finalToken.replaceAll("\\-", " ");
-				}*/
-				tempArr = finalToken.trim().split(" +");
-				finalToken = "";
-
-				// In case only one token is there is the stream
-				if (nTokens == 1) {
-					for (int i = 0; i < (tempArr.length - 1); i++) {
-						if (i == (tempArr.length - 2)) {
-							finalToken += tempArr[i].trim() + " "
-									+ tempArr[i + 1].trim();
-						} else {
-							finalToken += tempArr[i].trim() + " ";
+					if (nTokens == 1) {
+						if (token
+								.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|_/\\\\\\(\\)]+.*?")) {
+							token = token
+									.replaceAll(
+											"[~@#\\$%\\*=\\^\\&\\+:;<>\\|_/\\\\\\(\\)]+",
+											" ");
+							tempArr = token.trim().split(" +");
+							finalToken="";
+							for (i = 0; i < tempArr.length; i++) {
+								finalToken+=tempArr[i]+" ";
+							}
+							finalToken= finalToken.trim();
+							stream.previous();
+							stream.set(finalToken);
+						}
+					}else if(nTokens>1){
+						if (token
+								.matches(".*?[~@#$%\\*=\\^&\\+:;<>\\|_/\\\\\\(\\) ]+.*?")) {
+							tempArr = token.trim().split("[~@#\\$%\\*=\\^\\&\\+:;<>\\|_/\\\\\\(\\)]+");
+							if(tempArr.length==1){
+								stream.previous();
+								stream.set(tempArr[0].trim());
+								stream.next();
+							}
+							else{
+								stream.previous();
+								stream.remove();
+								for (i = 0; i < tempArr.length; i++) {
+									if(tempArr[i].trim().length()>0){
+										stream.seekEnd();
+										stream.append(tempArr[i]);
+									}
+									
+								}
+							}
+							
 						}
 					}
-					stream.previous();
-					stream.set(finalToken);
-					stream.seekEnd();
-				}
-				// Multiple tokens in the stream
-				else if (nTokens > 1) {
-					stream.reset();
-					for (int i = 0; i < tempArr.length; i++) {
-						if (stream.hasNext()) {
-							stream.set(tempArr[i]);
+						else{
+							stream.previous();
+							stream.set(token);
 							stream.next();
-						} else {
-							stream.append(tempArr[i]);
 						}
-					}
-					stream.reset();
-					for (int i = 0; i < tempArr.length; i++) {
-						stream.next();
-					}
-
-					while (stream.hasNext()) {
-						stream.remove();
-					}
 				}
+				count++;
 			}
 			stream.reset();
 		}

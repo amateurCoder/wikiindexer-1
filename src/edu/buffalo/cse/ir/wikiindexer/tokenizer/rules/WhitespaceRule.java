@@ -10,22 +10,23 @@ public class WhitespaceRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			String token = null;
-			stream.previous();
-			while (stream.hasNext()) {
+			String token = "";
+			int nTokens = 0, i = 0, count = 0;
+			nTokens = stream.getAllTokens().size();
+			stream.reset();
+			while (count < nTokens) {
 				token = stream.next();
+				stream.previous();
+				stream.remove();
+				System.out.println("Token:" + token);
 				if (token != null) {
 					String[] tempArr = token.trim().split("[ \n\r]+");
-					stream.previous();
-					for (int i = 0; i < tempArr.length; i++) {
-						if (stream.hasNext()) {
-							stream.set(tempArr[i]);
-							stream.next();
-						} else {
-							stream.append(tempArr[i]);
-							stream.seekEnd();
-						}
+					for (i = 0; i < tempArr.length; i++) {
+						stream.seekEnd();
+						stream.append(tempArr[i]);
+						System.out.println(tempArr[i]);
 					}
+					count++;
 				}
 			}
 			stream.reset();

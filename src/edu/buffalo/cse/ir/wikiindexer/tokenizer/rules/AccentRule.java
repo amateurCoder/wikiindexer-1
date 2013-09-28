@@ -55,12 +55,10 @@ public class AccentRule implements TokenizerRule {
 			stream.previous();
 			while (stream.hasNext()) {
 				token = stream.next();
-				System.out.println("Normalize:"+token);
 				result = Normalizer.normalize(token, Normalizer.Form.NFD);
 				Pattern pattern = Pattern
 						.compile("\\p{InCombiningDiacriticalMarks}+");
 				token = pattern.matcher(result).replaceAll("");
-				System.out.println("Result:" + token);
 				stream.previous();
 				stream.set(token);
 				stream.next();
