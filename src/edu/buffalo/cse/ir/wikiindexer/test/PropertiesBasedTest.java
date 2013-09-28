@@ -31,7 +31,7 @@ protected Properties idxProps;
 	@Parameters
 	public static Collection<Object[]> generateData() {
 		String propFile = System.getProperty("PROPSFILENAME");
-		//propFile = "files\\properties.config";
+		propFile = "files\\properties.config";
 		try {
 			
 			Properties p = FileUtil.loadProperties(propFile);

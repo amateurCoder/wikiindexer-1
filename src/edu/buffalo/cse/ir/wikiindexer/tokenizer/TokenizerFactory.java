@@ -74,10 +74,10 @@ public class TokenizerFactory {
 			}
 			if(field.toString().equalsIgnoreCase("CATEGORY"))
 			{
-				return new Tokenizer(new CapitalizationRule());
+				return new Tokenizer(new WhitespaceRule());
 			
 			}
-			if(field.toString().equalsIgnoreCase("LINK"))
+			if(field.toString().equalsIgnoreCase("TERM"))
 			{
 				return new Tokenizer(new CapitalizationRule());
 			
