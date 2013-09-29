@@ -45,7 +45,6 @@ public class FileUtil {
 	public static Properties loadProperties(String filename) throws IOException {
 		Properties props = new Properties();
 		FileInputStream inStream = null;
-		//TODO: Remove Hard coding
 		inStream = new FileInputStream(filename);
 		props.load(inStream);
 		inStream.close();

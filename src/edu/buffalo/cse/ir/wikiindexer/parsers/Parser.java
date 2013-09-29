@@ -3,7 +3,6 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.parsers;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Properties;
@@ -34,7 +33,7 @@ public class Parser {
 	 */
 	public Parser(Properties idxProps) {
 		props = idxProps;
-		
+
 	}
 
 	/* TODO: Implement this method */
@@ -42,50 +41,36 @@ public class Parser {
 	 * 
 	 * @param filename
 	 * @param docs
-	 * @throws Exception 
+	 * @throws Exception
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 */
-	public void parse(String filename, Collection<WikipediaDocument> docs){
-		
+	public void parse(String filename, Collection<WikipediaDocument> docs) {
+
 		System.out.println("in parse");
-			SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-			SAXParser saxParser;
-			try {
-				saxParser = saxParserFactory.newSAXParser();
-			
-			/*DefaultHandler handler = new DefaultHandler();
-			saxParser.parse(filename, handler);*/
-			
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+		SAXParser saxParser;
+		try {
+			saxParser = saxParserFactory.newSAXParser();
 			XMLReader xmlReader;
-			
+
 			xmlReader = saxParser.getXMLReader();
-			
-			xmlReader.setContentHandler(new WikipediaSaxParser(props,docs));
-			if(filename!=null&&filename!="")
-			{
-				if((FileUtil.getRootFilesFolder(props)
-						+ props.getProperty(IndexerConstants.DUMP_FILENAME)).equals(filename))
-				{
-					
+
+			xmlReader.setContentHandler(new WikipediaSaxParser(props, docs));
+			if (filename != null && filename != "") {
+				if ((FileUtil.getRootFilesFolder(props) + props
+						.getProperty(IndexerConstants.DUMP_FILENAME))
+						.equals(filename)) {
 					xmlReader.parse(filename);
 				}
-			
 			}
-			
-				
-			}catch (IOException | SAXException e) {
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
+		} catch (IOException | SAXException e) {
 			e.printStackTrace();
-			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+
 		}
-		
-			
-			
-		
-		
 	}
 
 	/**
@@ -101,8 +86,8 @@ public class Parser {
 	 */
 	protected synchronized void add(WikipediaDocument doc,
 			Collection<WikipediaDocument> documents) {
-		
+
 		documents.add(doc);
-		 
+
 	}
 }

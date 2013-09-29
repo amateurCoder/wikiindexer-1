@@ -17,7 +17,6 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 			Collection<WikipediaDocument> docs) {
 		super(idxProps);
 		this.wikiDocs = docs;
-		// TODO Auto-generated constructor stub
 	}
 
 	private boolean boolTitle;
@@ -57,15 +56,13 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void endElement(String uri, String localname, String tagName)
 			throws SAXException {
 		if (("title").equalsIgnoreCase(tagName)) {
-			
+
 			boolTitle = false;
 		} else if (("id").equalsIgnoreCase(tagName)) {
 			boolId = false;
@@ -85,48 +82,35 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 			WikipediaParser wikipediaParser = new WikipediaParser(title, id,
 					timestamp, ipOrUsername, textBuffer.toString());
 			wikipediaDocument = wikipediaParser.getWikipediaDocument();
-			
+
 			add(wikipediaDocument, wikiDocs);
 		}
 	}
 
 	@Override
 	public void endPrefixMapping(String prefix) throws SAXException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length)
 			throws SAXException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void processingInstruction(String target, String data)
 			throws SAXException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void setDocumentLocator(Locator locator) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void skippedEntity(String name) throws SAXException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void startDocument() throws SAXException {
-		// TODO Auto-generated method stub
-		System.out.println("in start document");
-
 	}
 
 	@Override
@@ -155,7 +139,6 @@ public class WikipediaSaxParser extends Parser implements ContentHandler {
 	@Override
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
-		// TODO Auto-generated method stub
 
 	}
 }

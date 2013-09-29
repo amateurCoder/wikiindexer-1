@@ -16,7 +16,7 @@ public class HyphenRule implements TokenizerRule {
 			while (stream.hasNext()) {
 				token = stream.next();
 				if (token != null) {
-					if (token.matches(" *-+ *")) {
+					if (token.matches(" *?-+ *")) {
 						stream.previous();
 						stream.remove();
 					}else if (token.matches("[a-z]*-+[a-z]*")){

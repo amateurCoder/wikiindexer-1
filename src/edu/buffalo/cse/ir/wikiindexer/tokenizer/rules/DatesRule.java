@@ -33,9 +33,9 @@ public class DatesRule implements TokenizerRule {
 			System.out.println("Final token:" + finalToken);
 
 			if (finalToken != null) {
-				if(finalToken.matches(" \\d+ [A-Za-z]+ \\d+ ")){
+//				if(finalToken.matches(" \\d+ [A-Za-z]+ \\d+ ")){
 					
-				}
+//				}
 			}
 		}
 	}

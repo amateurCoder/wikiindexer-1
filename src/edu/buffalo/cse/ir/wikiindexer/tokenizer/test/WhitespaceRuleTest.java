@@ -32,8 +32,8 @@ public class WhitespaceRuleTest extends TokenizerRuleTest {
 			fail("Rule not implemented");
 		} else {
 			try {
-				assertArrayEquals(new Object[]{"this","is","a","test" }, 
-						runtest("this is a test"));
+				assertArrayEquals(new Object[]{"Music","in","Bristol","Cub","Records","artists","Billy","Cotton","Band","Show" }, 
+						runtest("Music in Bristol Cub","Records artists","Billy Cotton Band Show"));
 				assertArrayEquals(new Object[]{"this","is","a","test" }, 
 						runtest("this    is     a      test"));
 				assertArrayEquals(new Object[]{"this","is","a","test" }, 

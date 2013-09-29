@@ -51,10 +51,10 @@ public class NumberRuleTest extends TokenizerRuleTest {
 									"and", "third", "parties."));
 					assertArrayEquals(
 							new Object[] { "The", "game", "received",
-									"average", "review", "scores", "of", "%",
+									"average", "review hello", "scores", "of", "%",
 									"and", "/", "for", "the", "Xbox", "version" },
 							runtest("The", "game", "received", "average",
-									"review", "scores", "of", "96.92%", "and",
+									"review hello 3333", "scores", "of", "96.92%", "and",
 									"98/100", "for", "the", "Xbox", "360",
 									"version"));
 					assertArrayEquals(
