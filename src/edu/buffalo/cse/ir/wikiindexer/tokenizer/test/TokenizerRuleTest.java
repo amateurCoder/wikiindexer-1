@@ -44,7 +44,7 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 		}
 		//TODO Remove hard coding
 		String className = idxProps.getProperty(constantName);
-//		String className = "edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.CapitalizationRule";
+//		String className = "edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.SpecialCharRule";
 		if (className != null) {
 			try {
 				Class cls = Class.forName(className);

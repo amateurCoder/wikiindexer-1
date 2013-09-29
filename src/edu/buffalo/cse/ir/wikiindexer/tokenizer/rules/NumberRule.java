@@ -20,22 +20,18 @@ public class NumberRule implements TokenizerRule {
 				stream.previous();
 				stream.remove();
 				// stream.next();
-				System.out.println("Token:" + token);
 				if (token != null) {
 					if (token.matches(".*? ?[0-9]+[.,]*[0-9]* ?.*")) {
 						if (token.matches(".*? ?[0-9]+[\\.,]*[0-9]* ?.*")) {
-							System.out.println("Block 1:"+token);
 							token = token.replaceAll(" ?[0-9]+[\\.,]*[0-9]* ?",
 									" ");
 						}
 						if (token
 								.matches(".*?([0-9]+[\\.,]*[0-9]*[^\\s].*|[^\\s][0-9]+[\\.,]*[0-9]*).*")) {
-							System.out.println("Block 2:"+token);
 							token = token.replaceAll("[0-9]+[\\.,]*[0-9]*", "");
 						}
 						
 					}
-					System.out.println("Final Token:" + token);
 
 //					tempArr = token.trim().split(" +");
 ////					token = "";

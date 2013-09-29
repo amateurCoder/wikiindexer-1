@@ -149,15 +149,22 @@ public class WikipediaParser {
 
 			// for link with stupid (brackets)
 			// case1&case2
-			if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
-
-				tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
-				tempStr[1] = tempStr[1].replaceAll(" ", "_");
-				tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
-						+ tempStr[1].substring(1);
-				String temp[] = text.split("\\ ");
-				tempStr[0] = temp[0].replaceAll("\\[|,", "");
-
+			if (text.matches("\\[+.* \\(*.*\\)*\\|.*?\\]+.*")) {
+				if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
+					tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
+					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
+							+ tempStr[1].substring(1);
+					String temp[] = text.split("\\ ");
+					tempStr[0] = temp[0].replaceAll("\\[|,", "");
+				} else {
+					String temp[] = text.split("\\|");
+					tempStr[0] = temp[1].replaceAll("\\]", "");
+					tempStr[1] = temp[0].replaceAll("\\[|\\]|\\|", "");
+					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
+							+ tempStr[1].substring(1);
+				}
 			}
 
 			// case with :
@@ -329,15 +336,11 @@ public class WikipediaParser {
 			e.printStackTrace();
 		}
 
-		// TODO: handling cases like [[Distinguished Service Medal (United
-		// Kingdom)|Distinguished Service Medal]] AND [[Redcliffe,
-		// Bristol|Redcliffe]]
 		// TODO Lang links - what to populate in Wikipedia document
 		// TODO Refactor regex expression to constants
 		// TODO Accented chars
 		// TODO Move RegEx in constants
 		// TODO what to do with LINK URl
-		// TODO Handle categories
 
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);

@@ -225,15 +225,15 @@ public class TokenStream implements Iterator<String> {
 		if (null != iterator) {
 			if (iterator.hasNext()) {
 				String temp = iterator.next();
-				int count = countMap.get(temp).intValue() - 1;
-				if (count == 0)
-					countMap.remove(temp);
-				else
-					countMap.put(temp, count);
-
-				iterator.previous();
-				iterator.remove();
-
+				if (null != countMap.get(temp)) {
+					int count = countMap.get(temp).intValue() - 1;
+					if (count == 0)
+						countMap.remove(temp);
+					else
+						countMap.put(temp, count);
+					iterator.previous();
+					iterator.remove();
+				}
 			}
 
 		}

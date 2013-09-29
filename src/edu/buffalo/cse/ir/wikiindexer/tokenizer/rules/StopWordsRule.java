@@ -56,7 +56,7 @@ public class StopWordsRule implements TokenizerRule {
 					String[] tempArr = token.split(" ");
 					ArrayList<String> finalArr = new ArrayList<String>();
 					for (int i = 0; i < tempArr.length; i++) {
-						if (!stopWords.contains(tempArr[i])) {
+						if (!stopWords.contains(tempArr[i].toLowerCase())) {
 							finalArr.add(tempArr[i]);
 						}
 					}

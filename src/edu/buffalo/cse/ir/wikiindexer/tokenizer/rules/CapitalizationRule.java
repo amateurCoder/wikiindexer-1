@@ -29,8 +29,8 @@ public class CapitalizationRule implements TokenizerRule {
 					// Abcdef, if
 					// yes converting to lower case
 					if (token.matches("[A-Za-z0-9 ]+.*")) {
-						System.out.println("Matched:" + token);
 						tempArr = token.trim().split(" +");
+						//Applying capitalization only to first word in first token
 						if (firstTokenFlag) {
 							if (Character.isUpperCase(tempArr[0].charAt(0))) {
 								str = tempArr[0].substring(1);
