@@ -42,10 +42,16 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 	public DocumentTransformer(Map<INDEXFIELD, Tokenizer> tknizerMap,
 			WikipediaDocument doc) {
 		// TODO: Implement this method
+		
+		
+					
+			
+		
 
 		tempMap = tknizerMap;
 		tempDoc = doc;
-		indexableDoc = new IndexableDocument();
+		
+		indexableDoc = new IndexableDocument(doc.getTitle());
 	}
 
 	/**
@@ -62,23 +68,33 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 			if (entry.getKey().toString().equalsIgnoreCase("AUTHOR")) {
 
 				TokenStream tempStream = new TokenStream(tempDoc.getAuthor());
+				
 				entry.getValue().tokenize(tempStream);
+				
 				indexableDoc.addField(entry.getKey(), tempStream);
 
-			} else if (entry.getKey().toString().equalsIgnoreCase("LINK")) {
-
+			}
+			 if (entry.getKey().toString().equalsIgnoreCase("LINK")) {
+				
+				
 				Set<String> tempLinkSet = tempDoc.getLinks();
 				Iterator<String> setIterator = tempLinkSet.iterator();
 				if (setIterator.hasNext()) {
 					TokenStream tempStream = new TokenStream(setIterator.next());
 					while (setIterator.hasNext()) {
+
 						tempStream.append(setIterator.next());
 					}
+					
 
+						
 					entry.getValue().tokenize(tempStream);
+					
+					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}
-			} else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
+			} 
+			 else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
 
 				List<String> tempCategoryList = tempDoc.getCategories();
 
@@ -91,33 +107,36 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 					while (categorylistIterator.hasNext()) {
 						tempStream.append(categorylistIterator.next());
 					}
+					
 					entry.getValue().tokenize(tempStream);
+					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}
+			}
+			if (entry.getKey().toString().equalsIgnoreCase("TERM")) {
 
-				else if (entry.getKey().toString().equalsIgnoreCase("TERM")) {
+				List<Section> tempListOfSections = tempDoc.getSections();
+				ListIterator<Section> tempIt = tempListOfSections
+						.listIterator();
+				if (tempIt.hasNext()) {
+					Section tempSection = tempIt.next();
+					TokenStream tempStream = new TokenStream(
+							tempSection.getTitle());
+					tempStream.append(tempSection.getText());
+					while (tempIt.hasNext()) {
+						tempStream.append(tempIt.next().getTitle());
+						tempIt.previous();
+						tempStream.append(tempIt.next().getText());
 
-					List<Section> tempListOfSections = tempDoc.getSections();
-					ListIterator<Section> tempIt = tempListOfSections
-							.listIterator();
-					if (tempIt.hasNext()) {
-						Section tempSection = tempIt.next();
-						TokenStream tempStream = new TokenStream(
-								tempSection.getTitle());
-						tempStream.append(tempSection.getText());
-						while (tempIt.hasNext()) {
-							tempStream.append(tempIt.next().getTitle());
-							tempIt.previous();
-							tempStream.append(tempIt.next().getText());
-
-						}
-						entry.getValue().tokenize(tempStream);
-
-						indexableDoc.addField(entry.getKey(), tempStream);
 					}
+					
+					entry.getValue().tokenize(tempStream);
+					
+					indexableDoc.addField(entry.getKey(), tempStream);
 				}
 			}
 		}
+		
 		return indexableDoc;
 	}
 

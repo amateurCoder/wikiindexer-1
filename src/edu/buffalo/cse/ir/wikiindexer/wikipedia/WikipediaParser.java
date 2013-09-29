@@ -130,7 +130,7 @@ public class WikipediaParser {
 		String tempStr[] = new String[2];
 		tempStr[0] = "";
 		tempStr[1] = "";
-
+System.out.println("in parselinks");
 		if (null != text) {
 			// case-1
 			if (text.matches("\\[\\[[0-9A-Za-z- \\|0-9A-Za-z- ]+\\]\\]")) {
@@ -144,6 +144,7 @@ public class WikipediaParser {
 				}
 				tempStr[1] = tempStr[1].replaceAll(" ", "_");
 				tempStr[1] = capitalize(tempStr[1]);
+				
 				return tempStr;
 			}
 
@@ -166,6 +167,8 @@ public class WikipediaParser {
 							+ tempStr[1].substring(1);
 				}
 			}
+				 
+			
 
 			// case with :
 			if (text.matches("\\[\\[.*:.*\\|*\\]\\]+")) {

@@ -38,19 +38,22 @@ public class ThreadedIndexerRunner {
 		int numOccur, numPart;
 		TermIndexEntry tidx;
 		RunnerThread currThread;
-
+		
 		for (Entry<String, Integer> etr : tokenmap.entrySet()) {
 			term = etr.getKey();
 			numOccur = etr.getValue();
-
+			
 			if (term != null && numOccur > 0) {
 				numPart = Partitioner.getPartitionNumber(term);
-
+				
 				if (numPart >= 0 && numPart < rthreads.length) {
+					
 					tidx = new TermIndexEntry(term, docid, numOccur);
 					currThread = rthreads[numPart];
 					currThread.pvtQueue.add(tidx);
+					
 					if (!currThread.isRunning) {
+						
 						currThread.isRunning = true;
 						new Thread(currThread).start();
 					}
@@ -60,6 +63,7 @@ public class ThreadedIndexerRunner {
 	}
 
 	protected void cleanup() {
+		
 		for (RunnerThread thr : rthreads) {
 			thr.setComplete();
 		}
@@ -113,6 +117,7 @@ public class ThreadedIndexerRunner {
 			TermIndexEntry etr;
 
 			while (true) {
+				
 				etr = pvtQueue.poll();
 
 				if (etr == null) {
@@ -136,6 +141,7 @@ public class ThreadedIndexerRunner {
 				} else {
 					// we have an entry
 					try {
+						
 						writer.addToIndex(etr.term, etr.docId,
 								etr.numOccurances);
 					} catch (IndexerException e) {

@@ -70,13 +70,12 @@ public class TokenStream implements Iterator<String> {
 	 */
 	public void append(String... tokens) {
 		// TODO: Implement this method
+		System.out.println("in append"+tokens[0]);
 		if (null != tokens) {
 			for (String value : tokens) {
 				if (value != null && value.length() > 0 && iterator!=null) {
 					iterator.add(value);
-
 					if (countMap.get(value) == null) {
-
 						countMap.put(value, 1);
 						// iterator.add(value);
 					} else {
@@ -89,8 +88,10 @@ public class TokenStream implements Iterator<String> {
 				}
 
 			}
-
+			
+			
 			iterator = collStream.listIterator();// reset
+			
 		}
 
 	}
@@ -222,17 +223,22 @@ public class TokenStream implements Iterator<String> {
 	 * Iterator method: Method to remove the current token from the stream
 	 */
 	public void remove() {
-		if (null != iterator) {
-			if (iterator.hasNext()) {
+		int count=0;
+		if (null != iterator)
+		{
+			if (iterator.hasNext())
+			{
 				String temp = iterator.next();
-				if (null != countMap.get(temp)) {
-					int count = countMap.get(temp).intValue() - 1;
-					if (count == 0)
-						countMap.remove(temp);
-					else
-						countMap.put(temp, count);
-					iterator.previous();
-					iterator.remove();
+				if(null!=countMap.get(temp))
+				{
+				 count = countMap.get(temp).intValue() - 1;
+				if (count == 0)
+					countMap.remove(temp);
+				else
+					countMap.put(temp, count);
+
+				iterator.previous();
+				iterator.remove();
 				}
 			}
 

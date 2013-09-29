@@ -18,15 +18,15 @@ public class IndexableDocument {
 	/**
 	 * Default constructor
 	 */
-	private static int docCount=0;
+	
 	private String docId;
 	
 	private HashMap<INDEXFIELD, TokenStream> indexMap;
-	public IndexableDocument() 
+	public IndexableDocument(String docTitle) 
 	{
 		//TODO: Init state as needed
-		 docId=Integer.toString(docCount);
-		 docCount++;
+		 docId=docTitle;
+		
 		 indexMap = new HashMap<INDEXFIELD, TokenStream>(INDEXFIELD.values().length);
 	}
 	

@@ -210,6 +210,7 @@ public class WikipediaParserTest {
 		assertEquals(new Object[]{"New York also has public transportation", "Public_transport"}, WikipediaParser.parseLinks("New York also has [[public transport|public transportation]]"));
 		//12
 		assertEquals(new Object[]{"San Francisco also has public transportation", "Public_transport"}, WikipediaParser.parseLinks("San Francisco also has [[public transport]]ation"));
+		//assertEquals(new Object[]{"working men's clubs", "Working_men's_club"}, WikipediaParser.parseLinks("[[working men's club]]s"));
 		//13
 		assertEquals(new Object[]{"A micro-second", "Micro-"}, WikipediaParser.parseLinks("A [[micro-]]<nowiki />second"));
 		//14

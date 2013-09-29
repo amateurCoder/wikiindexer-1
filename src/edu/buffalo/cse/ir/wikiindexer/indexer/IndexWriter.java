@@ -67,18 +67,17 @@ public class IndexWriter implements Writeable {
 	 */
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField, boolean isForward) {
-		this.indexProp = props;
+		indexProp = props;
 		this.type = keyField.toString();
 		if (INDEXFIELD.AUTHOR.equals(keyField)) {
-			this.authMap = new HashMap<String, List<Integer>>();
+			authMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.CATEGORY.equals(keyField)) {
-			this.categoryMap = new HashMap<String, List<Integer>>();
+			categoryMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.TERM.equals(keyField)) {
-			this.termMap = new HashMap<String, List<Integer>>();
+			termMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.LINK.equals(keyField)) {
-			this.linkMap = new HashMap<Integer, List<Integer>>();
+			linkMap = new HashMap<Integer, List<Integer>>();
 		}
-
 	}
 
 	/**
@@ -107,23 +106,19 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, int valueId, int numOccurances)
 			throws IndexerException {
-		Map<Integer, List<Integer>> tempMap = null;
-		if (type.equalsIgnoreCase("LINK")) {
-			tempMap = linkMap;
-		}
-		int nOccurances = 0;
-		if (null != tempMap) {
-			if (tempMap.containsKey(keyId)) {
-				nOccurances = tempMap.get(keyId).get(0);
-				nOccurances = nOccurances + numOccurances;
-				tempMap.get(keyId).add(valueId);
-				tempMap.get(keyId).add(0, nOccurances);
-			} else {
-				List<Integer> list = new ArrayList<Integer>();
-				list.add(0, numOccurances);
-				list.add(valueId);
-				tempMap.put(keyId, list);
-			}
+			int nOccurances = 0;
+			if (null != linkMap) {
+				if (linkMap.containsKey(keyId)) {
+					nOccurances = linkMap.get(keyId).get(0);
+					nOccurances = nOccurances + numOccurances;
+					linkMap.get(keyId).add(valueId);
+					linkMap.get(keyId).add(0, nOccurances);
+				} else {
+					List<Integer> list = new ArrayList<Integer>();
+					list.add(0, numOccurances);
+					list.add(valueId);
+					linkMap.put(keyId, list);
+				}
 		}
 	}
 
@@ -158,34 +153,53 @@ public class IndexWriter implements Writeable {
 	 * @throws IndexerException
 	 *             : If any exception occurs while indexing
 	 */
-	public void addToIndex(String key, int valueId, int numOccurances)
+	public synchronized void addToIndex(String key, int valueId, int numOccurances)
 			throws IndexerException {
-		Map<String, List<Integer>> tempMap = null;
-		if (type.equals("AUTHOR")) {
-			tempMap = authMap;
-		} else if (type.equals("CATEGORY")) {
-			tempMap = categoryMap;
-		} else if (type.equals("TERM")) {
-			tempMap = termMap;
-		}
 		int nOccurances = 0;
-		if (null != tempMap) {
-			if (tempMap.containsKey(key)) {
-				nOccurances = tempMap.get(key).get(0);
-				nOccurances = nOccurances + numOccurances;
-				tempMap.get(key).add(valueId);
-				tempMap.get(key).add(0, nOccurances);
-			} else {
-				List<Integer> list = new ArrayList<Integer>();
-				list.add(0, numOccurances);
-				list.add(valueId);
-				tempMap.put(key, list);
+		if (type.equalsIgnoreCase("AUTHOR")) {
+			if (null != authMap) {
+				if (authMap.containsKey(key)) {
+					nOccurances = authMap.get(key).get(0);
+					nOccurances = nOccurances + numOccurances;
+					authMap.get(key).add(valueId);
+					authMap.get(key).add(0, nOccurances);
+				} else {
+					List<Integer> list = new ArrayList<Integer>();
+					list.add(0, numOccurances);
+					list.add(valueId);
+					authMap.put(key, list);
+				}
+			}
+		} else if (type.equalsIgnoreCase("CATEGORY")) {
+			if (null != categoryMap) {
+				if (categoryMap.containsKey(key)) {
+					nOccurances = categoryMap.get(key).get(0);
+					nOccurances = nOccurances + numOccurances;
+					categoryMap.get(key).add(valueId);
+					categoryMap.get(key).add(0, nOccurances);
+				} else {
+					List<Integer> list = new ArrayList<Integer>();
+					list.add(0, numOccurances);
+					list.add(valueId);
+					categoryMap.put(key, list);
+				}
+			}
+		} else if (type.equalsIgnoreCase("TERM")) {
+			if (null != termMap) {
+				if (termMap.containsKey(key)) {
+					nOccurances = termMap.get(key).get(0);
+					nOccurances = nOccurances + numOccurances;
+					termMap.get(key).add(valueId);
+					termMap.get(key).add(0, nOccurances);
+				} else {
+					List<Integer> list = new ArrayList<Integer>();
+					list.add(0, numOccurances);
+					list.add(valueId);
+					termMap.put(key, list);
+				}
 			}
 		}
-		System.out.println("Map:"+ tempMap);
-		
 	}
-
 	/**
 	 * Method to add a given key - value mapping to the index
 	 * 
@@ -210,31 +224,33 @@ public class IndexWriter implements Writeable {
 	 * @see edu.buffalo.cse.ir.wikiindexer.indexer.Writeable#writeToDisk()
 	 */
 	public void writeToDisk() throws IndexerException {
-		String filename = "";
-		Map<String, List<Integer>> map = null;
 		FileOutputStream fileOutputStream;
 		ObjectOutputStream objectOutputStream;
-		if (type.equalsIgnoreCase("AUTHOR")) {
-			filename = "files/authMap.txt";
-			map = authMap;
-		} else if (type.equalsIgnoreCase("CATEGORY")) {
-			filename = "files/categoryMap.txt";
-			map = categoryMap;
-		} else if (type.equalsIgnoreCase("TERM")) {
-			filename = "files/termMap.txt";
-			map = termMap;
-		}
 		try {
-			if (type.equalsIgnoreCase("LINK")) {
+			if (type.equalsIgnoreCase("AUTHOR")) {
+				fileOutputStream = new FileOutputStream("files/authMap.txt");
+				objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(authMap);
+				objectOutputStream.close();
+				System.out.println("author" +authMap);
+			} else if (type.equalsIgnoreCase("CATEGORY")) {
+				fileOutputStream = new FileOutputStream("files/categoryMap.txt");
+				objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(categoryMap);
+				objectOutputStream.close();
+				System.out.println("catergory " +categoryMap);
+			} else if (type.equalsIgnoreCase("TERM")) {
+				fileOutputStream = new FileOutputStream("files/termMap.txt");
+				objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(termMap);
+				objectOutputStream.close();
+				System.out.println("term"+termMap);
+			} else if (type.equalsIgnoreCase("LINK")) {
 				fileOutputStream = new FileOutputStream("files/linkMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(linkMap);
 				objectOutputStream.close();
-			} else {
-				fileOutputStream = new FileOutputStream(filename);
-				objectOutputStream = new ObjectOutputStream(fileOutputStream);
-				objectOutputStream.writeObject(map);
-				objectOutputStream.close();
+				System.out.println("link:" +linkMap);
 			}
 		} catch (FileNotFoundException e) {
 			throw new IndexerException(e.getMessage());
