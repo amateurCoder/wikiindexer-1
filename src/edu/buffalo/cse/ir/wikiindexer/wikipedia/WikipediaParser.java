@@ -376,7 +376,7 @@ public class WikipediaParser {
 		matcher = pattern.matcher(tempText);
 		while (matcher.find()) {
 			tempArr = parseLinks(matcher.group(0).trim());
-			if (!tempArr[0].trim().equals(null)) {
+			if (!tempArr[0].trim().equals(null) && !tempArr[0].trim().equals("")) {
 				wikipediaDocument.addLink(tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);

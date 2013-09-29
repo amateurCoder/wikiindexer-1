@@ -3,11 +3,14 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -33,10 +36,11 @@ public class IndexWriter implements Writeable {
 	 *            : The index field that is the value for this index
 	 */
 	private static Properties indexProp;
-	private static Map<String, Integer> authMap;
-	private static Map<String, Integer> categoryMap;
-	private static Map<String, Integer> termMap;
-	private static Map<Integer, Integer> linkMap;
+	private static Map<String, List<Integer>> authMap;
+	private static Map<String, List<Integer>> categoryMap;
+	private static Map<String, List<Integer>> termMap;
+	private static Map<Integer, List<Integer>> linkMap;
+	private String type;
 
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField) {
@@ -64,14 +68,15 @@ public class IndexWriter implements Writeable {
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField, boolean isForward) {
 		this.indexProp = props;
+		this.type = keyField.toString();
 		if (INDEXFIELD.AUTHOR.equals(keyField)) {
-			this.authMap = new HashMap<String, Integer>();
+			this.authMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.CATEGORY.equals(keyField)) {
-			this.categoryMap = new HashMap<String, Integer>();
+			this.categoryMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.TERM.equals(keyField)) {
-			this.termMap = new HashMap<String, Integer>();
+			this.termMap = new HashMap<String, List<Integer>>();
 		} else if (INDEXFIELD.LINK.equals(keyField)) {
-			this.linkMap = new HashMap<Integer, Integer>();
+			this.linkMap = new HashMap<Integer, List<Integer>>();
 		}
 
 	}
@@ -102,7 +107,24 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, int valueId, int numOccurances)
 			throws IndexerException {
-		// TODO: Implement this method
+		Map<Integer, List<Integer>> tempMap = null;
+		if (type.equalsIgnoreCase("LINK")) {
+			tempMap = linkMap;
+		}
+		int nOccurances = 0;
+		if (null != tempMap) {
+			if (tempMap.containsKey(keyId)) {
+				nOccurances = tempMap.get(keyId).get(0);
+				nOccurances = nOccurances + numOccurances;
+				tempMap.get(keyId).add(valueId);
+				tempMap.get(keyId).add(0, nOccurances);
+			} else {
+				List<Integer> list = new ArrayList<Integer>();
+				list.add(0, numOccurances);
+				list.add(valueId);
+				tempMap.put(keyId, list);
+			}
+		}
 	}
 
 	/**
@@ -120,7 +142,7 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, String value, int numOccurances)
 			throws IndexerException {
-		// TODO: Implement this method
+
 	}
 
 	/**
@@ -138,7 +160,30 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(String key, int valueId, int numOccurances)
 			throws IndexerException {
-		// TODO: Implement this method
+		Map<String, List<Integer>> tempMap = null;
+		if (type.equals("AUTHOR")) {
+			tempMap = authMap;
+		} else if (type.equals("CATEGORY")) {
+			tempMap = categoryMap;
+		} else if (type.equals("TERM")) {
+			tempMap = termMap;
+		}
+		int nOccurances = 0;
+		if (null != tempMap) {
+			if (tempMap.containsKey(key)) {
+				nOccurances = tempMap.get(key).get(0);
+				nOccurances = nOccurances + numOccurances;
+				tempMap.get(key).add(valueId);
+				tempMap.get(key).add(0, nOccurances);
+			} else {
+				List<Integer> list = new ArrayList<Integer>();
+				list.add(0, numOccurances);
+				list.add(valueId);
+				tempMap.put(key, list);
+			}
+		}
+		System.out.println("Map:"+ tempMap);
+		
 	}
 
 	/**
@@ -166,28 +211,30 @@ public class IndexWriter implements Writeable {
 	 */
 	public void writeToDisk() throws IndexerException {
 		String filename = "";
-		Map<String, Integer> map = null;
-		if (!authMap.equals(null)) {
-			filename = "authMap.config";
+		Map<String, List<Integer>> map = null;
+		FileOutputStream fileOutputStream;
+		ObjectOutputStream objectOutputStream;
+		if (type.equalsIgnoreCase("AUTHOR")) {
+			filename = "files/authMap.txt";
 			map = authMap;
-		} else if (!categoryMap.equals(null)) {
-			filename = "categoryMap.config";
+		} else if (type.equalsIgnoreCase("CATEGORY")) {
+			filename = "files/categoryMap.txt";
 			map = categoryMap;
-		} else if (!termMap.equals(null)) {
-			filename = "termMap.config";
+		} else if (type.equalsIgnoreCase("TERM")) {
+			filename = "files/termMap.txt";
 			map = termMap;
 		}
 		try {
-			if (!linkMap.equals(null)) {
-				FileOutputStream f1 = new FileOutputStream("linkMap.config");
-				ObjectOutputStream o1 = new ObjectOutputStream(f1);
-				o1.writeObject(linkMap);
-				o1.close();
+			if (type.equalsIgnoreCase("LINK")) {
+				fileOutputStream = new FileOutputStream("files/linkMap.txt");
+				objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(linkMap);
+				objectOutputStream.close();
 			} else {
-				FileOutputStream f1 = new FileOutputStream(filename);
-				ObjectOutputStream o1 = new ObjectOutputStream(f1);
-				o1.writeObject(map);
-				o1.close();
+				fileOutputStream = new FileOutputStream(filename);
+				objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(map);
+				objectOutputStream.close();
 			}
 		} catch (FileNotFoundException e) {
 			throw new IndexerException(e.getMessage());

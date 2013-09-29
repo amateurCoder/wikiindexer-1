@@ -18,13 +18,11 @@ public class WhitespaceRule implements TokenizerRule {
 				token = stream.next();
 				stream.previous();
 				stream.remove();
-				System.out.println("Token:" + token);
 				if (token != null) {
 					String[] tempArr = token.trim().split("[ \n\r]+");
 					for (i = 0; i < tempArr.length; i++) {
 						stream.seekEnd();
 						stream.append(tempArr[i]);
-						System.out.println(tempArr[i]);
 					}
 					count++;
 				}
