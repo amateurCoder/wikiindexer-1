@@ -48,7 +48,6 @@ public class Parser {
 	 */
 	public void parse(String filename, Collection<WikipediaDocument> docs) {
 
-		System.out.println("in parse");
 		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		SAXParser saxParser;
 		try {

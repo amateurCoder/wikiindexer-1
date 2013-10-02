@@ -31,7 +31,7 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 			 fail("Rule not implemented");
 		} else {
 			try {
-				if (true) {
+				if (isPreTokenization) {
 					//special symbols one by one
 					assertArrayEquals(new Object[]{"destructor is method"}, 
 							runtest("destructor is ~method()")); //tilda, brackets

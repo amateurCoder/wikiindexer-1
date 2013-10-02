@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -22,10 +23,10 @@ import java.util.Properties;
  */
 public class IndexReader {
 	private static Properties indexProp;
-	private static Map<String, List<Integer>> authMap;
-	private static Map<String, List<Integer>> categoryMap;
-	private static Map<String, List<Integer>> termMap;
-	private static Map<Integer, List<Integer>> linkMap;
+	private static Map<String, LinkedList<PostingNode>> authMap;
+	private static Map<String, LinkedList<PostingNode>> categoryMap;
+	private static Map<String, LinkedList<PostingNode>> termMap;
+	private static Map<Integer, LinkedList<PostingNode>> linkMap;
 	private String types;
 
 	/**
@@ -54,15 +55,43 @@ public class IndexReader {
 			return authMap.size();
 		} else if (types.equalsIgnoreCase("CATEGORY")) {
 			categoryMap = readInvertibleIndex(types);
+			System.out.println("Number of indexes for categoryMap:"+categoryMap.size());
 			return categoryMap.size();
 		} else if (types.equalsIgnoreCase("TERM")) {
 			termMap = readInvertibleIndex(types);
+			System.out.println("Number of indexes for termMap:"+termMap.size());
 			return termMap.size();
 		} else if (types.equalsIgnoreCase("LINK")) {
 			linkMap = readForwardIndex(types);
+			System.out.println("Number of indexes for linkMap:"+linkMap.size());
 			return linkMap.size();
 		}
 		return -1;
+	}
+	
+	public Map<String, LinkedList<PostingNode>> getMap() throws IndexerException{
+		if (types.equalsIgnoreCase("AUTHOR")) {
+			authMap = readInvertibleIndex(types);
+			return authMap;
+		}
+		else if (types.equalsIgnoreCase("CATEGORY")) {
+			categoryMap = readInvertibleIndex(types);
+			return categoryMap;
+		}
+		else if (types.equalsIgnoreCase("TERM")) {
+			termMap = readInvertibleIndex(types);
+			return termMap;
+		}
+		return null;
+	}
+
+
+	public Map<Integer, LinkedList<PostingNode>> getLinkMap() throws IndexerException {
+		if (types.equalsIgnoreCase("LINK")) {
+			linkMap = readForwardIndex(types);
+			return linkMap;
+		}
+		return null;
 	}
 
 	/**
@@ -73,16 +102,16 @@ public class IndexReader {
 	 */
 	public int getTotalValueTerms() throws IndexerException {
 		if (types.equalsIgnoreCase("AUTHOR")) {
-			readInvertibleIndex(types);
+			authMap = readInvertibleIndex(types);
 			return getValueCount(types);
 		} else if (types.equalsIgnoreCase("CATEGORY")) {
-			readInvertibleIndex(types);
+			categoryMap = readInvertibleIndex(types);
 			return getValueCount(types);
 		} else if (types.equalsIgnoreCase("TERM")) {
-			readInvertibleIndex(types);
+			termMap = readInvertibleIndex(types);
 			return getValueCount(types);
 		} else if (types.equalsIgnoreCase("LINK")) {
-			readForwardIndex(types);
+			linkMap = readForwardIndex(types);
 			return getValueCount(types);
 		}
 		return -1;
@@ -133,30 +162,30 @@ public class IndexReader {
 		return null;
 	}
 
-	private Map<String, List<Integer>> readInvertibleIndex(String types)
+	private Map<String, LinkedList<PostingNode>> readInvertibleIndex(String types)
 			throws IndexerException {
 		FileInputStream fileInputStream;
 		ObjectInputStream objectInputStream;
-		Map<String, List<Integer>> tempMap = new HashMap<String, List<Integer>>();
+		Map<String, LinkedList<PostingNode>> tempMap = new HashMap<String, LinkedList<PostingNode>>();
 		try {
 			if (types.equalsIgnoreCase("AUTHOR")) {
 				fileInputStream = new FileInputStream("files/authMap.txt");
 				objectInputStream = new ObjectInputStream(fileInputStream);
-				tempMap = (Map<String, List<Integer>>) objectInputStream
+				tempMap = (Map<String, LinkedList<PostingNode>>) objectInputStream
 						.readObject();
 				objectInputStream.close();
 				return tempMap;
 			} else if (types.equalsIgnoreCase("CATEGORY")) {
 				fileInputStream = new FileInputStream("files/categoryMap.txt");
 				objectInputStream = new ObjectInputStream(fileInputStream);
-				tempMap = (Map<String, List<Integer>>) objectInputStream
+				tempMap = (Map<String, LinkedList<PostingNode>>) objectInputStream
 						.readObject();
 				objectInputStream.close();
 				return tempMap;
 			} else if (types.equalsIgnoreCase("TERM")) {
 				fileInputStream = new FileInputStream("files/termMap.txt");
 				objectInputStream = new ObjectInputStream(fileInputStream);
-				termMap = (Map<String, List<Integer>>) objectInputStream
+				tempMap = (Map<String, LinkedList<PostingNode>>) objectInputStream
 						.readObject();
 				objectInputStream.close();
 				return tempMap;
@@ -171,15 +200,15 @@ public class IndexReader {
 		return null;
 	}
 	
-	private Map<Integer, List<Integer>> readForwardIndex(String types) throws IndexerException {
+	private Map<Integer, LinkedList<PostingNode>> readForwardIndex(String types) throws IndexerException {
 		FileInputStream fileInputStream;
 		ObjectInputStream objectInputStream;
-		Map<Integer,List<Integer>> lMap = new HashMap<Integer,List<Integer>>();
+		Map<Integer, LinkedList<PostingNode>> lMap = new HashMap<Integer,LinkedList<PostingNode>>();
 		try {
 			if (types.equalsIgnoreCase("LINK")) {
 				fileInputStream = new FileInputStream("files/linkMap.txt");
 				objectInputStream = new ObjectInputStream(fileInputStream);
-				lMap = (Map<Integer, List<Integer>>) objectInputStream
+				lMap = (Map<Integer, LinkedList<PostingNode>>) objectInputStream
 						.readObject();
 				objectInputStream.close();
 				return lMap;
@@ -195,8 +224,61 @@ public class IndexReader {
 	}
 	
 	private int getValueCount(String types) {
-		// TODO Auto-generated method stub
+		Iterator iterator;
+		int count=0;
+		if (types.equalsIgnoreCase("AUTHOR")) {
+			iterator = authMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Author Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Author Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+				count+=list.size()-1;//excluding number of occurances field
+			}
+			return count;
+		}else if (types.equalsIgnoreCase("CATEGORY")) {
+			iterator = categoryMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Category Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Category Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+				count+=list.size()-1;//excluding number of occurances field
+			}
+			return count;
+		}else if (types.equalsIgnoreCase("TERM")) {
+			iterator = termMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Term Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Term Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+				count+=list.size()-1;//excluding number of occurances field
+			}
+			return count;
+		}else if (types.equalsIgnoreCase("LINK")) {
+			iterator = linkMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Link Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Link Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+				count+=list.size()-1;//excluding number of occurances field
+			}
+			return count;
+		}
 		return 0;
 	}
-
 }

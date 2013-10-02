@@ -46,6 +46,7 @@ public class StopWordsRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
+			System.out.println("Incoming Stream in stopwords:" + stream.getAllTokens());
 			String token;
 			// TODO: Remove stream.previous();
 			stream.previous();
@@ -56,7 +57,7 @@ public class StopWordsRule implements TokenizerRule {
 					String[] tempArr = token.split(" ");
 					ArrayList<String> finalArr = new ArrayList<String>();
 					for (int i = 0; i < tempArr.length; i++) {
-						if (!stopWords.contains(tempArr[i].toLowerCase())) {
+						if (!stopWords.contains(tempArr[i].toLowerCase().trim())) {
 							finalArr.add(tempArr[i]);
 						}
 					}
@@ -79,6 +80,7 @@ public class StopWordsRule implements TokenizerRule {
 				}
 			}
 			stream.reset();
+			System.out.println("Outgoing Stream in stopwords:" + stream.getAllTokens());
 		}
 
 	}

@@ -109,6 +109,7 @@ public class WikipediaParser {
 	public static String parseTemplates(String text) {
 		if (null != text) {
 			while (text.indexOf("{{") != -1) {
+//				System.out.println("Stuck========="+text);
 				text = text.replaceAll("\\{\\{[^{}]*\\}\\}", "");
 			}
 			return text;
@@ -130,7 +131,6 @@ public class WikipediaParser {
 		String tempStr[] = new String[2];
 		tempStr[0] = "";
 		tempStr[1] = "";
-System.out.println("in parselinks");
 		if (null != text) {
 			// case-1
 			if (text.matches("\\[\\[[0-9A-Za-z- \\|0-9A-Za-z- ]+\\]\\]")) {
@@ -344,7 +344,6 @@ System.out.println("in parselinks");
 		// TODO Accented chars
 		// TODO Move RegEx in constants
 		// TODO what to do with LINK URl
-
 		tempText = parseTemplates(text);
 		tempText = parseTextFormatting(tempText);
 		tempText = parseTagFormatting(tempText);
@@ -359,6 +358,7 @@ System.out.println("in parselinks");
 			tempArr = parseLinks(matcher.group(0));
 			if (!tempArr[0].trim().equals(null)) {
 				wikipediaDocument.addCategory(tempArr[0].trim());
+//				System.out.println("Category in wikipedia parser:" + tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), "");
 		}
@@ -381,6 +381,7 @@ System.out.println("in parselinks");
 			tempArr = parseLinks(matcher.group(0).trim());
 			if (!tempArr[0].trim().equals(null) && !tempArr[0].trim().equals("")) {
 				wikipediaDocument.addLink(tempArr[0].trim());
+//				System.out.println("Link in wikipedia parser:" + tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);
 		}
@@ -399,6 +400,7 @@ System.out.println("in parselinks");
 					// System.out.println("Body " + sectionArr[i + 1].trim());
 					wikipediaDocument.addSection(sectionArr[i].trim(),
 							sectionArr[i + 1].trim());
+//					System.out.println("Section Title:"+sectionArr[i].trim()+"###Section TEXT:"+sectionArr[i+1].trim());
 					i = i + 1;
 				}
 			}

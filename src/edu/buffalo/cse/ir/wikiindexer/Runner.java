@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletionService;
@@ -25,7 +27,9 @@ import org.junit.runner.JUnitCore;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants.RequiredConstant;
 import edu.buffalo.cse.ir.wikiindexer.indexer.Dictionary;
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
+import edu.buffalo.cse.ir.wikiindexer.indexer.IndexReader;
 import edu.buffalo.cse.ir.wikiindexer.indexer.IndexerException;
+import edu.buffalo.cse.ir.wikiindexer.indexer.PostingNode;
 import edu.buffalo.cse.ir.wikiindexer.indexer.SharedDictionary;
 import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
 import edu.buffalo.cse.ir.wikiindexer.test.AllTests;
@@ -67,6 +71,7 @@ public class Runner {
 							runTests(filename);
 						} else if ("i".equals(mode)) {
 							runIndexer(properties);
+//							printData();
 						} else if ("b".equals(mode)) {
 							runTests(filename);
 							runIndexer(properties);
@@ -89,6 +94,107 @@ public class Runner {
 		}
 	}
 
+	/*private static void printData() {
+		IndexReader indexReader = new IndexReader(null, INDEXFIELD.AUTHOR);
+		IndexReader indexReader1 = new IndexReader(null, INDEXFIELD.CATEGORY);
+		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
+		IndexReader indexReader3 = new IndexReader(null, INDEXFIELD.LINK);
+		//For number of keys
+		int nAuthors=0;
+		try {
+			nAuthors = indexReader.getTotalKeyTerms();
+			Map<String, LinkedList<PostingNode>> map = indexReader.getMap();
+			Iterator iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Author Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Author Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+			}
+		} catch (IndexerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Authour count:" + nAuthors);
+		
+		int nCategory=0;
+		try {
+			nCategory = indexReader1.getTotalKeyTerms();
+			Map<String, LinkedList<PostingNode>> map = indexReader1.getMap();
+			Iterator iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				System.out.println("Category Key:"+mapEntry.getKey());
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Category Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+			}
+		} catch (IndexerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Category count:" + nCategory);
+		
+		int nTerm=0;
+		try {
+			nTerm = indexReader2.getTotalKeyTerms();
+			Map<String, LinkedList<PostingNode>> map = indexReader2.getMap();
+			Iterator iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Term Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+			}
+		} catch (IndexerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Term count:" + nTerm);
+		
+		int nLink=0;
+		try {
+			nLink = indexReader3.getTotalKeyTerms();
+			Map<Integer, LinkedList<PostingNode>> map = indexReader3.getLinkMap();
+			Iterator iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
+				for(int i=1;i<list.size();i++){
+					PostingNode pn = list.get(i);
+					System.out.println("Link Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
+				}
+			}
+		} catch (IndexerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Link count:" + nLink);
+		
+		//For total number of values
+		int count =0;
+		try {
+			count = indexReader.getTotalValueTerms();
+			System.out.println("Count for author:" + count);
+			count = indexReader1.getTotalValueTerms();
+			System.out.println("Count for category:" + count);
+			count = indexReader2.getTotalValueTerms();
+			System.out.println("Count for term:" + count);
+			count = indexReader3.getTotalValueTerms();
+			System.out.println("Count for link:" + count);
+		} catch (IndexerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+*/
 	/**
 	 * Method to print the correct usage to run this class.
 	 */
@@ -126,12 +232,8 @@ public class Runner {
 					Thread.sleep(1500);
 					queuesize = getQueueSize(queue);
 				}
-
-				
 			
-				
-					
-				
+			System.out.println("-----PARSING DONE----");				
 			tokenizeAndIndex(properties, queue);
 			
 		} catch (InterruptedException e) {
@@ -164,6 +266,8 @@ public class Runner {
 		tokenizerThread.start();
 		new Thread(new ParserChecker(queue)).start();
 
+		System.out.println("-----TOKENIZATION DONE----");
+		
 		//give the tokenizer a head start
 		Thread.sleep(2000);
 
@@ -262,7 +366,7 @@ public class Runner {
 			//do nothing
 			Thread.sleep(1000);
 		}
-
+		System.out.println("-----INDEXING DONE----");
 		threadPool.shutdown();
 	}
 

@@ -132,7 +132,7 @@ public class WikipediaParserTest {
 	 */
 	@Test
 	public final void testParseTemplates() {
-		assertEquals("", WikipediaParser.parseTemplates("{{UK-singer-stub}}"));
+		assertEquals("", WikipediaParser.parseTemplates("<ref></ref><ref>{{cite news |title=Украинцы планируют убийства в Грузии? |url=http://www.km.ru/magazin/view.asp?id={5CE15A8F-9F1E-4C36-A007-0C818963B6CD} |work= |publisher=KMnews.RU |date=13 August 2008 |language=Russian |accessdate=4 December 2008 }}</ref>"));
 		assertEquals("", WikipediaParser.parseTemplates("{{YouTube|TnIpQhDn4Zg|Russ Conway playing Side Saddle}}"));
 		assertEquals("", WikipediaParser.parseTemplates("{{Unreferenced stub|auto=yes|date=December 2009}}"));
 		assertEquals("", WikipediaParser.parseTemplates("{{Reflist}}"));
