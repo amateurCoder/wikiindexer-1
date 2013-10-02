@@ -10,6 +10,7 @@ public class PunctuationRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
+			System.out.println("Incoming Stream in punctuation:" + stream.getAllTokens());
 			String token;
 			stream.previous();
 			while (stream.hasNext()) {
@@ -30,6 +31,7 @@ public class PunctuationRule implements TokenizerRule {
 
 			}
 			stream.reset();
+			System.out.println("Outgoing Stream in punctuation:" + stream.getAllTokens());
 		}
 
 	}

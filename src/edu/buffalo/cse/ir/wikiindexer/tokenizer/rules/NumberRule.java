@@ -10,43 +10,71 @@ public class NumberRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			String token = "";
-			String [] tempArr;
-			int nTokens = 0, i = 0, count = 0;
-			nTokens = stream.getAllTokens().size();
-			stream.reset();
-			while (count < nTokens) {
+			System.out.println("Incoming Stream in number:" + stream.getAllTokens());
+			String token = "", finalToken = "";
+			String[] tempArr;
+			int nTokens = 0;
+			stream.previous();
+			while (stream.hasNext()) {
+				nTokens++;
 				token = stream.next();
-				stream.previous();
-				stream.remove();
-				// stream.next();
 				if (token != null) {
-					if (token.matches(".*? ?[0-9]+[.,]*[0-9]* ?.*")) {
-						if (token.matches(".*? ?[0-9]+[\\.,]*[0-9]* ?.*")) {
-							token = token.replaceAll(" ?[0-9]+[\\.,]*[0-9]* ?",
-									" ");
-						}
-						if (token
-								.matches(".*?([0-9]+[\\.,]*[0-9]*[^\\s].*|[^\\s][0-9]+[\\.,]*[0-9]*).*")) {
-							token = token.replaceAll("[0-9]+[\\.,]*[0-9]*", "");
-						}
-						
+					if (stream.hasNext()) {
+						finalToken += token + " ";
+					} else {
+						finalToken += token;
 					}
-
-//					tempArr = token.trim().split(" +");
-////					token = "";
-//					for (i = 0; i < tempArr.length; i++) {
-					if(token.trim().length()>0){
-						stream.seekEnd();
-						stream.append(token.trim());
-					}	
-						// stream.next();
-//						System.out.println("Temp" + token);
-//					}
-					count++;
 				}
 			}
-			stream.reset();
+			if (finalToken != null) {
+				if (finalToken.matches(".*? [0-9]+[.,]*[0-9]*.*")) {
+					if (finalToken.matches(".*?\\s+[0-9]+[\\.,]*[0-9]*\\s+.*")) {
+						finalToken = finalToken.replaceAll(
+								" [0-9]+[\\.,]*[0-9]* ", " ");
+					}
+					if (finalToken
+							.matches("(.*? [0-9]+[\\.,]*[0-9]*[^\\s].*|.*?[^\\s][0-9]+[\\.,]*[0-9]* .*)")) {
+						finalToken = finalToken.replaceAll(
+								"[0-9]+[\\.,]*[0-9]*", "");
+					}
+				}
+			}
+			tempArr = finalToken.trim().split(" +");
+			finalToken = "";
+			// In case only single token is present in the stream
+			if (nTokens == 1) {
+				for (int i = 0; i < (tempArr.length - 1); i++) {
+					if (i == (tempArr.length - 2)) {
+						finalToken += tempArr[i].trim() + " "
+								+ tempArr[i + 1].trim();
+					} else {
+						finalToken += tempArr[i].trim() + " ";
+					}
+				}
+				stream.previous();
+				stream.set(finalToken);
+				stream.seekEnd();
+				// Multiple tokens in the stream
+			} else if (nTokens > 1) {
+				stream.reset();
+				for (int i = 0; i < tempArr.length; i++) {
+					if (stream.hasNext()) {
+						stream.set(tempArr[i]);
+						stream.next();
+					} else {
+						stream.append(tempArr[i]);
+					}
+				}
+				stream.reset();
+				for (int i = 0; i < tempArr.length; i++) {
+					stream.next();
+				}
+				while (stream.hasNext()) {
+					stream.remove();
+				}
+				stream.reset();
+				System.out.println("Outgoing Stream in number:" + stream.getAllTokens());
+			}
 		}
 	}
 }

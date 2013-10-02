@@ -41,13 +41,6 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 
 	public DocumentTransformer(Map<INDEXFIELD, Tokenizer> tknizerMap,
 			WikipediaDocument doc) {
-		// TODO: Implement this method
-		
-		
-					
-			
-		
-
 		tempMap = tknizerMap;
 		tempDoc = doc;
 		
@@ -72,7 +65,6 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 				entry.getValue().tokenize(tempStream);
 				
 				indexableDoc.addField(entry.getKey(), tempStream);
-
 			}
 			 if (entry.getKey().toString().equalsIgnoreCase("LINK")) {
 				
@@ -86,10 +78,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 						tempStream.append(setIterator.next());
 					}
 					
-
-						
 					entry.getValue().tokenize(tempStream);
-					
 					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}
@@ -130,7 +119,11 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 
 					}
 					
+//					System.out.println("Before tokenization==="+tempStream.getAllTokens());
+					
 					entry.getValue().tokenize(tempStream);
+					
+//					System.out.println("After tokenization==="+tempSection.getText());
 					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}

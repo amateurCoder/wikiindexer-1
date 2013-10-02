@@ -9,10 +9,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.omg.PortableServer.POA;
 
 /**
  * @author nikhillo This class is used to write an index to the disk
@@ -36,10 +41,10 @@ public class IndexWriter implements Writeable {
 	 *            : The index field that is the value for this index
 	 */
 	private static Properties indexProp;
-	private static Map<String, List<Integer>> authMap;
-	private static Map<String, List<Integer>> categoryMap;
-	private static Map<String, List<Integer>> termMap;
-	private static Map<Integer, List<Integer>> linkMap;
+	private static Map<String, LinkedList<PostingNode>> authMap;
+	private static Map<String, LinkedList<PostingNode>> categoryMap;
+	private static Map<String, LinkedList<PostingNode>> termMap;
+	private static Map<Integer, LinkedList<PostingNode>> linkMap;
 	private String type;
 
 	public IndexWriter(Properties props, INDEXFIELD keyField,
@@ -70,13 +75,13 @@ public class IndexWriter implements Writeable {
 		indexProp = props;
 		this.type = keyField.toString();
 		if (INDEXFIELD.AUTHOR.equals(keyField)) {
-			authMap = new HashMap<String, List<Integer>>();
+			authMap = new HashMap<String, LinkedList<PostingNode>>();
 		} else if (INDEXFIELD.CATEGORY.equals(keyField)) {
-			categoryMap = new HashMap<String, List<Integer>>();
+			categoryMap = new HashMap<String, LinkedList<PostingNode>>();
 		} else if (INDEXFIELD.TERM.equals(keyField)) {
-			termMap = new HashMap<String, List<Integer>>();
+			termMap = new HashMap<String, LinkedList<PostingNode>>();
 		} else if (INDEXFIELD.LINK.equals(keyField)) {
-			linkMap = new HashMap<Integer, List<Integer>>();
+			linkMap = new HashMap<Integer, LinkedList<PostingNode>>();
 		}
 	}
 
@@ -106,19 +111,22 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, int valueId, int numOccurances)
 			throws IndexerException {
-			int nOccurances = 0;
-			if (null != linkMap) {
-				if (linkMap.containsKey(keyId)) {
-					nOccurances = linkMap.get(keyId).get(0);
-					nOccurances = nOccurances + numOccurances;
-					linkMap.get(keyId).add(valueId);
-					linkMap.get(keyId).add(0, nOccurances);
-				} else {
-					List<Integer> list = new ArrayList<Integer>();
-					list.add(0, numOccurances);
-					list.add(valueId);
-					linkMap.put(keyId, list);
-				}
+		int nOccurances = 0;
+		if (null != linkMap) {
+			if (linkMap.containsKey(keyId)) {
+				nOccurances = linkMap.get(keyId).get(0).getFrequency();
+				nOccurances = nOccurances + numOccurances;
+				linkMap.get(keyId).get(0).setFrequency(nOccurances);
+				PostingNode postingNode = new PostingNode(valueId,
+						numOccurances);
+				linkMap.get(keyId).add(postingNode);
+			} else {
+				LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
+				linkedList.addFirst(new PostingNode(0, numOccurances));
+				PostingNode node = new PostingNode(valueId, numOccurances);
+				linkedList.add(node);
+				linkMap.put(keyId, linkedList);
+			}
 		}
 	}
 
@@ -153,53 +161,63 @@ public class IndexWriter implements Writeable {
 	 * @throws IndexerException
 	 *             : If any exception occurs while indexing
 	 */
-	public synchronized void addToIndex(String key, int valueId, int numOccurances)
-			throws IndexerException {
+	public synchronized void addToIndex(String key, int valueId,
+			int numOccurances) throws IndexerException {
 		int nOccurances = 0;
 		if (type.equalsIgnoreCase("AUTHOR")) {
 			if (null != authMap) {
 				if (authMap.containsKey(key)) {
-					nOccurances = authMap.get(key).get(0);
+					nOccurances = authMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
-					authMap.get(key).add(valueId);
-					authMap.get(key).add(0, nOccurances);
+					authMap.get(key).get(0).setFrequency(nOccurances);
+					PostingNode postingNode = new PostingNode(valueId,
+							numOccurances);
+					authMap.get(key).add(postingNode);
 				} else {
-					List<Integer> list = new ArrayList<Integer>();
-					list.add(0, numOccurances);
-					list.add(valueId);
-					authMap.put(key, list);
+					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
+					linkedList.addFirst(new PostingNode(0, numOccurances));
+					PostingNode node = new PostingNode(valueId, numOccurances);
+					linkedList.add(node);
+					authMap.put(key, linkedList);
 				}
 			}
 		} else if (type.equalsIgnoreCase("CATEGORY")) {
 			if (null != categoryMap) {
 				if (categoryMap.containsKey(key)) {
-					nOccurances = categoryMap.get(key).get(0);
+					nOccurances = categoryMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
-					categoryMap.get(key).add(valueId);
-					categoryMap.get(key).add(0, nOccurances);
+					categoryMap.get(key).get(0).setFrequency(nOccurances);
+					PostingNode postingNode = new PostingNode(valueId,
+							numOccurances);
+					categoryMap.get(key).add(postingNode);
 				} else {
-					List<Integer> list = new ArrayList<Integer>();
-					list.add(0, numOccurances);
-					list.add(valueId);
-					categoryMap.put(key, list);
+					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
+					linkedList.addFirst(new PostingNode(0, numOccurances));
+					PostingNode node = new PostingNode(valueId, numOccurances);
+					linkedList.add(node);
+					categoryMap.put(key, linkedList);
 				}
 			}
 		} else if (type.equalsIgnoreCase("TERM")) {
 			if (null != termMap) {
 				if (termMap.containsKey(key)) {
-					nOccurances = termMap.get(key).get(0);
+					nOccurances = termMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
-					termMap.get(key).add(valueId);
-					termMap.get(key).add(0, nOccurances);
+					termMap.get(key).get(0).setFrequency(nOccurances);
+					PostingNode postingNode = new PostingNode(valueId,
+							numOccurances);
+					termMap.get(key).add(postingNode);
 				} else {
-					List<Integer> list = new ArrayList<Integer>();
-					list.add(0, numOccurances);
-					list.add(valueId);
-					termMap.put(key, list);
+					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
+					linkedList.addFirst(new PostingNode(0, numOccurances));
+					PostingNode node = new PostingNode(valueId, numOccurances);
+					linkedList.add(node);
+					termMap.put(key, linkedList);
 				}
 			}
 		}
 	}
+
 	/**
 	 * Method to add a given key - value mapping to the index
 	 * 
@@ -228,11 +246,13 @@ public class IndexWriter implements Writeable {
 		ObjectOutputStream objectOutputStream;
 		try {
 			if (type.equalsIgnoreCase("AUTHOR")) {
+//				Collection<LinkedList<PostingNode>> coll = authMap.values();
+//				Collections.sort(authMap.);
+//				LinkedList<PostingNode> list = authMap.
 				fileOutputStream = new FileOutputStream("files/authMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(authMap);
 				objectOutputStream.close();
-				System.out.println("author" +authMap);
 			} else if (type.equalsIgnoreCase("CATEGORY")) {
 				fileOutputStream = new FileOutputStream("files/categoryMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -254,13 +274,13 @@ public class IndexWriter implements Writeable {
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(linkMap);
 				objectOutputStream.close();
-				System.out.println("link:" +linkMap);
 			}
 		} catch (FileNotFoundException e) {
 			throw new IndexerException(e.getMessage());
 		} catch (IOException e) {
 			throw new IndexerException(e.getMessage());
 		}
+		System.out.println("=====Disk write done====");
 	}
 
 	/*

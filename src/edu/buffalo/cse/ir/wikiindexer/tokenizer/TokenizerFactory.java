@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.*;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.test.StopWordsRuleTest;
 
 /**
  * Factory class to instantiate a Tokenizer instance
@@ -79,7 +80,7 @@ public class TokenizerFactory {
 			}
 			if(field.toString().equalsIgnoreCase("TERM"))
 			{
-				return new Tokenizer(new WhitespaceRule(),new PunctuationRule(),new SpecialCharRule(),new StopWordsRule());
+				return new Tokenizer(/*new StopWordsRule(),new WhitespaceRule(),new AccentRule(),new SpecialCharRule(), /*Date?*//*new NumberRule(),new PunctuationRule(),new ApostropheRule(),new HyphenRule(),new StopWordsRule()*/);
 			
 			}
 		} catch (TokenizerException e) {

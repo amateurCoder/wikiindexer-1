@@ -63,8 +63,8 @@ public class PunctuationRuleTest extends TokenizerRuleTest {
 						runtest("token","one!","token","two!"));
 				assertArrayEquals(new Object[] {"token","one","token","two"},
 						runtest("token","one!","token","two?"));
-				assertArrayEquals(new Object[] {"token","one","token","two"},
-						runtest("token","one?","token","two?"));
+				assertArrayEquals(new Object[] {"a.out","one","token","two"},
+						runtest("a.out.","one?","token","two?"));
 				
 				//negative cases
 				assertArrayEquals(new Object[]{"192.168.10.124"}, runtest("192.168.10.124"));
