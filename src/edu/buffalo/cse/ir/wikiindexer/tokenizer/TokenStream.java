@@ -73,7 +73,7 @@ public class TokenStream implements Iterator<String> {
 		
 		if (null != tokens) {
 			for (String value : tokens) {
-				if (value != null && value.length() > 0&&iterator!=null) {
+				if (value != null && value.length() > 0 && iterator!=null) {
 					iterator.add(value);
 					if (countMap.get(value) == null) {
 						countMap.put(value, 1);

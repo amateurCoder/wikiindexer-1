@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class IndexWriter implements Writeable {
 	private static Map<String, List<Integer>> categoryMap;
 	private static Map<String, List<Integer>> termMap;
 	private static Map<Integer, List<Integer>> linkMap;
-	String type;
+	private String type;
 
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField) {
@@ -105,7 +106,6 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, int valueId, int numOccurances)
 			throws IndexerException {
-		if (type.equalsIgnoreCase("LINK")) {
 			int nOccurances = 0;
 			if (null != linkMap) {
 				if (linkMap.containsKey(keyId)) {
@@ -119,7 +119,6 @@ public class IndexWriter implements Writeable {
 					list.add(valueId);
 					linkMap.put(keyId, list);
 				}
-			}
 		}
 	}
 
@@ -138,7 +137,7 @@ public class IndexWriter implements Writeable {
 	 */
 	public void addToIndex(int keyId, String value, int numOccurances)
 			throws IndexerException {
-		// TODO: Implement this method
+
 	}
 
 	/**
@@ -239,13 +238,17 @@ public class IndexWriter implements Writeable {
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(categoryMap);
 				objectOutputStream.close();
+				
 				System.out.println("catergory " +categoryMap);
 			} else if (type.equalsIgnoreCase("TERM")) {
+				System.out.println("DAs");
 				fileOutputStream = new FileOutputStream("files/termMap.txt");
+				System.out.println("DAs");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(termMap);
 				objectOutputStream.close();
-				System.out.println("term"+termMap);
+				
+				System.out.println("term:" +termMap);
 			} else if (type.equalsIgnoreCase("LINK")) {
 				fileOutputStream = new FileOutputStream("files/linkMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
