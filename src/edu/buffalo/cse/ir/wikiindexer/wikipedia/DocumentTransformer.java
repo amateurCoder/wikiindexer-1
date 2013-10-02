@@ -65,7 +65,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 
 		for (Map.Entry<INDEXFIELD, Tokenizer> entry : tempMap.entrySet()) {
 
-			/*if (entry.getKey().toString().equalsIgnoreCase("AUTHOR")) {
+			if (entry.getKey().toString().equalsIgnoreCase("AUTHOR")) {
 
 				TokenStream tempStream = new TokenStream(tempDoc.getAuthor());
 				
@@ -73,7 +73,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 				
 				indexableDoc.addField(entry.getKey(), tempStream);
 
-			}*/
+			}
 			 if (entry.getKey().toString().equalsIgnoreCase("LINK")) {
 				
 				
@@ -87,22 +87,14 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 					}
 					
 
-						Collection<String> colltemp=tempStream.getAllTokens();
-						if(colltemp!=null){
-							Iterator it= colltemp.iterator();
 						
-						while(it.hasNext())
-							System.out.println(it.next());
-						}
-						System.out.println("--------------");
-					
 					entry.getValue().tokenize(tempStream);
 					
 					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}
 			} 
-			 /*else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
+			 else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
 
 				List<String> tempCategoryList = tempDoc.getCategories();
 
@@ -142,7 +134,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 					
 					indexableDoc.addField(entry.getKey(), tempStream);
 				}
-			}*/
+			}
 		}
 		
 		return indexableDoc;
