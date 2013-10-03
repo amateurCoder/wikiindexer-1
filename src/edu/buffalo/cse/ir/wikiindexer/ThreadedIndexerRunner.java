@@ -41,6 +41,7 @@ public class ThreadedIndexerRunner {
 		
 		for (Entry<String, Integer> etr : tokenmap.entrySet()) {
 			term = etr.getKey();
+//			System.out.println("TERM:"+term);
 			numOccur = etr.getValue();
 			
 			if (term != null && numOccur > 0) {

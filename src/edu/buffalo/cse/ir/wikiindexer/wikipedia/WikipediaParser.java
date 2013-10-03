@@ -107,14 +107,22 @@ public class WikipediaParser {
 	 * @return The parsed text with the markup removed
 	 */
 	public static String parseTemplates(String text) {
+		/*
+		 * if (null != text) { while (text.indexOf("{{") != -1) { //
+		 * System.out.println("Stuck========="+text); text =
+		 * text.replaceAll("\\{\\{[^{}]*\\}\\}", ""); } return text; } return
+		 * null;
+		 */
 		if (null != text) {
-			while (text.indexOf("{{") != -1) {
-//				System.out.println("Stuck========="+text);
-				text = text.replaceAll("\\{\\{[^{}]*\\}\\}", "");
+			Matcher m = Pattern.compile("\\{[^{}]*\\}").matcher(text);
+			while (m.find()) {
+				text = m.replaceAll("");
+				m.reset(text);
 			}
 			return text;
 		}
 		return null;
+
 	}
 
 	/**
@@ -144,7 +152,7 @@ public class WikipediaParser {
 				}
 				tempStr[1] = tempStr[1].replaceAll(" ", "_");
 				tempStr[1] = capitalize(tempStr[1]);
-				
+
 				return tempStr;
 			}
 
@@ -167,8 +175,6 @@ public class WikipediaParser {
 							+ tempStr[1].substring(1);
 				}
 			}
-				 
-			
 
 			// case with :
 			if (text.matches("\\[\\[.*:.*\\|*\\]\\]+")) {
@@ -339,6 +345,8 @@ public class WikipediaParser {
 			e.printStackTrace();
 		}
 
+		System.out.println("Text Before Parsing" + text);
+		
 		// TODO Lang links - what to populate in Wikipedia document
 		// TODO Refactor regex expression to constants
 		// TODO Accented chars
@@ -358,7 +366,8 @@ public class WikipediaParser {
 			tempArr = parseLinks(matcher.group(0));
 			if (!tempArr[0].trim().equals(null)) {
 				wikipediaDocument.addCategory(tempArr[0].trim());
-//				System.out.println("Category in wikipedia parser:" + tempArr[0].trim());
+				// System.out.println("Category in wikipedia parser:" +
+				// tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), "");
 		}
@@ -379,13 +388,17 @@ public class WikipediaParser {
 		matcher = pattern.matcher(tempText);
 		while (matcher.find()) {
 			tempArr = parseLinks(matcher.group(0).trim());
-			if (!tempArr[0].trim().equals(null) && !tempArr[0].trim().equals("")) {
+			if (!tempArr[0].trim().equals(null)
+					&& !tempArr[0].trim().equals("")) {
 				wikipediaDocument.addLink(tempArr[0].trim());
-//				System.out.println("Link in wikipedia parser:" + tempArr[0].trim());
+				// System.out.println("Link in wikipedia parser:" +
+				// tempArr[0].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);
 		}
 
+		System.out.println("Text After PArsing@@" + tempText);
+		
 		// Fetching section
 		String[] sectionArr = tempText.split("[=]{2,6}");
 		if (sectionArr.length > 1) {
@@ -400,7 +413,7 @@ public class WikipediaParser {
 					// System.out.println("Body " + sectionArr[i + 1].trim());
 					wikipediaDocument.addSection(sectionArr[i].trim(),
 							sectionArr[i + 1].trim());
-//					System.out.println("Section Title:"+sectionArr[i].trim()+"###Section TEXT:"+sectionArr[i+1].trim());
+					// System.out.println("Section Title:"+sectionArr[i].trim()+"###Section TEXT:"+sectionArr[i+1].trim());
 					i = i + 1;
 				}
 			}

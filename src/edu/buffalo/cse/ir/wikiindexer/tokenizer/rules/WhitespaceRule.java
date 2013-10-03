@@ -13,8 +13,8 @@ public class WhitespaceRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			System.out.println("Incoming Stream in whitespace:"
-					+ stream.getAllTokens());
+//			System.out.println("Incoming Stream in whitespace:"
+//					+ stream.getAllTokens());
 			String token = "", finalToken="";
 			stream.previous();
 			while (stream.hasNext()) {
@@ -38,8 +38,8 @@ public class WhitespaceRule implements TokenizerRule {
 				}
 			}
 			stream.reset();
-			System.out.println("Outgoing Stream in whitespace:"
-					+ stream.getAllTokens());
+//			System.out.println("Outgoing Stream in whitespace:"
+//					+ stream.getAllTokens());
 		}
 		
 	}

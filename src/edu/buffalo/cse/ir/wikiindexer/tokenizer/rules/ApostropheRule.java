@@ -51,7 +51,7 @@ public class ApostropheRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-			System.out.println("Incoming Stream in Apostrophe:" + stream.getAllTokens());
+//			System.out.println("Incoming Stream in Apostrophe:" + stream.getAllTokens());
 			String token = "", result = "", tempResult = "";
 			stream.previous();
 			while (stream.hasNext()) {
@@ -101,7 +101,7 @@ public class ApostropheRule implements TokenizerRule {
 				}
 			}
 			stream.reset();
-			System.out.println("Outgoing Stream in apostrophe:" + stream.getAllTokens());
+//			System.out.println("Outgoing Stream in apostrophe:" + stream.getAllTokens());
 		}
 
 	}

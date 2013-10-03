@@ -88,8 +88,9 @@ public class TokenStream implements Iterator<String> {
 
 			}
 			
-			
-			iterator = collStream.listIterator();// reset
+			if(null!=collStream){
+				iterator = collStream.listIterator();// reset
+			}
 			
 		}
 

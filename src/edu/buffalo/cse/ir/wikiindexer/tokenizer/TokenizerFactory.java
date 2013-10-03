@@ -80,8 +80,7 @@ public class TokenizerFactory {
 			}
 			if(field.toString().equalsIgnoreCase("TERM"))
 			{
-				return new Tokenizer(/*new StopWordsRule(),new WhitespaceRule(),new AccentRule(),new SpecialCharRule(), /*Date?*//*new NumberRule(),new PunctuationRule(),new ApostropheRule(),new HyphenRule(),new StopWordsRule()*/);
-			
+				return new Tokenizer(new StopWordsRule(),new WhitespaceRule(),new AccentRule(),new SpecialCharRule(), /*Date?*/new NumberRule(),new PunctuationRule(),new ApostropheRule(),/*new HyphenRule(),*/new StopWordsRule(),new EnglishStemmer());
 			}
 		} catch (TokenizerException e) {
 			// TODO Auto-generated catch block

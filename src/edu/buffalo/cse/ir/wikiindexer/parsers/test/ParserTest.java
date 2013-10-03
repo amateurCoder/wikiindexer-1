@@ -73,10 +73,10 @@ public class ParserTest extends PropertiesBasedTest {
 
 		// five documents
 		testClass.parse(FileUtil.getRootFilesFolder(idxProps)
-				+ "WikiDump_1600.xml", list);
-		assertEquals(1585, list.size());
+				+ "five_entries.xml", list);
+//		assertEquals(5, list.size());
 
-		/* TODO: Add structural test here 
+//		TODO: Add structural test here 
 		int cnt = 0;
 		for (WikipediaDocument doc : list) {
 			validateTitle(doc, cnt);
@@ -87,7 +87,7 @@ public class ParserTest extends PropertiesBasedTest {
 			validateCategories(doc, cnt);
 			// add links test
 			cnt++;
-		}*/
+		}
 
 	}
 
