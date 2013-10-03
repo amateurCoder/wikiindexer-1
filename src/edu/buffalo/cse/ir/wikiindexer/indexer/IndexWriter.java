@@ -258,11 +258,17 @@ public class IndexWriter implements Writeable {
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(categoryMap);
 				objectOutputStream.close();
+				
+				System.out.println("catergory " +categoryMap);
 			} else if (type.equalsIgnoreCase("TERM")) {
+				System.out.println("DAs");
 				fileOutputStream = new FileOutputStream("files/termMap.txt");
+				System.out.println("DAs");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(termMap);
 				objectOutputStream.close();
+				
+				System.out.println("term:" +termMap);
 			} else if (type.equalsIgnoreCase("LINK")) {
 				fileOutputStream = new FileOutputStream("files/linkMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);

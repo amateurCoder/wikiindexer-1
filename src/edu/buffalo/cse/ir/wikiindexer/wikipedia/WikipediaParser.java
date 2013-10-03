@@ -139,6 +139,7 @@ public class WikipediaParser {
 		String tempStr[] = new String[2];
 		tempStr[0] = "";
 		tempStr[1] = "";
+
 		if (null != text) {
 			// case-1
 			if (text.matches("\\[\\[[0-9A-Za-z- \\|0-9A-Za-z- ]+\\]\\]")) {

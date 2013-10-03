@@ -70,6 +70,7 @@ public class TokenStream implements Iterator<String> {
 	 */
 	public void append(String... tokens) {
 		// TODO: Implement this method
+
 		if (null != tokens) {
 			for (String value : tokens) {
 				if (value != null && value.length() > 0 && iterator!=null) {
