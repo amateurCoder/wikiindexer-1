@@ -74,7 +74,7 @@ public class SingleRunner {
 						if ("t".equals(mode)) {
 							runTests(filename);
 						} else if ("i".equals(mode)) {
-//							runIndexer(properties);
+							//runIndexer(properties);
 							readIndexer();
 						} else if ("b".equals(mode)) {
 							runTests(filename);

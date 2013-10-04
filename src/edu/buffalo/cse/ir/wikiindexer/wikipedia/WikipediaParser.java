@@ -159,7 +159,7 @@ public class WikipediaParser {
 
 			// for link with stupid (brackets)
 			// case1&case2
-			if (text.matches("\\[+.* \\(*.*\\)*\\|.*?\\]+.*")) {
+			if (text.matches("\\[\\[.* \\(*.*\\)*\\|.*?\\]\\]+.*")) {
 				if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
 					tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
 					tempStr[1] = tempStr[1].replaceAll(" ", "_");
@@ -315,15 +315,16 @@ public class WikipediaParser {
 				return tempStr;
 			}
 
-			if (text.matches("\\[http:\\/\\/www\\.wikipedia\\.org.*\\]")) {
+			if (text.matches("\\[http:.*\\]")) {
 				if (text.matches("\\[http:\\/\\/www\\.wikipedia\\.org .*\\]")) {
 					String temp[] = text.split(" ");
 					tempStr[0] = temp[1].replaceAll("\\]", "");
 				} else
+				{
+					System.out.println(text);
 					tempStr[0] = "";
-
-				tempStr[1] = "";
-
+				    tempStr[1] = "";
+				}
 			}
 		}
 
@@ -373,7 +374,7 @@ public class WikipediaParser {
 			tempText = tempText.replace(matcher.group(0), "");
 		}
 
-		pattern = Pattern.compile("\\[\\[[a-z]*?:.*?\\]\\]");
+		pattern = Pattern.compile("\\[+[a-z]*?:.*?\\]+");
 		matcher = pattern.matcher(tempText);
 		while (matcher.find()) {
 			tempArr = parseLinks(matcher.group(0).trim());
