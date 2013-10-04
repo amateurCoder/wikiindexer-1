@@ -39,7 +39,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 	Map<INDEXFIELD, Tokenizer> tempMap;
 	WikipediaDocument tempDoc;
 	IndexableDocument indexableDoc;
-
+static int emptydoc;
 	public DocumentTransformer(Map<INDEXFIELD, Tokenizer> tknizerMap,
 			WikipediaDocument doc) {
 		tempMap = tknizerMap;
@@ -78,14 +78,14 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 
 				Set<String> tempLinkSet = tempDoc.getLinks();
 				Iterator<String> setIterator = tempLinkSet.iterator();
-				if (setIterator.hasNext()) {
+				if (setIterator.hasNext() && null!=setIterator) {
 					TokenStream tempStream = new TokenStream(setIterator.next());
 					while (setIterator.hasNext()) {
 
 						tempStream.append(setIterator.next());
 					}
-
 					entry.getValue().tokenize(tempStream);
+										
 
 					Collection<String> coll = tempStream.getAllTokens();
 					Iterator<String> it = coll.iterator();
@@ -93,7 +93,14 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 					while (it.hasNext()) {
 						finalStream.append(it.next());
 					}
-
+						
+						
+							indexableDoc.addField(entry.getKey(), finalStream);
+						
+				}
+				else
+				{
+					TokenStream finalStream = new TokenStream("nil");
 					indexableDoc.addField(entry.getKey(), finalStream);
 				}
 			} else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {

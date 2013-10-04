@@ -46,6 +46,8 @@ public class IndexWriter implements Writeable {
 	private static Map<String, LinkedList<PostingNode>> termMap;
 	private static Map<Integer, LinkedList<PostingNode>> linkMap;
 	private String type;
+	
+	static int doc;
 
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField) {
@@ -120,6 +122,7 @@ public class IndexWriter implements Writeable {
 				PostingNode postingNode = new PostingNode(valueId,
 						numOccurances);
 				linkMap.get(keyId).add(postingNode);
+				
 			} else {
 				LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 				linkedList.addFirst(new PostingNode(0, numOccurances));
@@ -259,16 +262,12 @@ public class IndexWriter implements Writeable {
 				objectOutputStream.writeObject(categoryMap);
 				objectOutputStream.close();
 				
-				System.out.println("catergory " +categoryMap);
 			} else if (type.equalsIgnoreCase("TERM")) {
-				System.out.println("DAs");
 				fileOutputStream = new FileOutputStream("files/termMap.txt");
-				System.out.println("DAs");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(termMap);
 				objectOutputStream.close();
 				
-				System.out.println("term:" +termMap);
 			} else if (type.equalsIgnoreCase("LINK")) {
 				fileOutputStream = new FileOutputStream("files/linkMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);

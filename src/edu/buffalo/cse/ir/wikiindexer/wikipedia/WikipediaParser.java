@@ -158,11 +158,14 @@ public class WikipediaParser {
 			}
 
 			// for link with stupid (brackets)
-			// case1&case2
+			// case1&case2&14&4
 			if (text.matches("\\[\\[.* \\(*.*\\)*\\|.*?\\]\\]+.*")) {
 				if (text.matches("\\[+.* \\(*.*\\)*\\|\\]+")) {
 					tempStr[1] = text.replaceAll("\\[|\\]|\\|", "");
-					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					
+					tempStr[1] = tempStr[1].replaceFirst(" \\(", "_(");
+					tempStr[1] = tempStr[1].replaceFirst(", ", ",_");
+					
 					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
 							+ tempStr[1].substring(1);
 					String temp[] = text.split("\\ ");
@@ -171,12 +174,14 @@ public class WikipediaParser {
 					String temp[] = text.split("\\|");
 					tempStr[0] = temp[1].replaceAll("\\]", "");
 					tempStr[1] = temp[0].replaceAll("\\[|\\]|\\|", "");
-					tempStr[1] = tempStr[1].replaceAll(" ", "_");
+					
+					tempStr[1] = tempStr[1].replaceFirst(" \\(", "_(");
+					tempStr[1] = tempStr[1].replaceFirst(", ", ",_");
+					
 					tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
 							+ tempStr[1].substring(1);
 				}
 			}
-
 			// case with :
 			if (text.matches("\\[\\[.*:.*\\|*\\]\\]+")) {
 				if (text.matches("\\[+Wikipedia:.* *\\|\\]+")) {
@@ -306,6 +311,7 @@ public class WikipediaParser {
 				tempStr[1] = tempStr[1].replaceAll("\\[|\\]", "");
 
 				tempStr[1] = tempStr[1].replaceAll("<nowiki \\/>", "");
+				if(tempStr[1]!="")
 				tempStr[1] = Character.toUpperCase(tempStr[1].charAt(0))
 						+ tempStr[1].substring(1);
 
@@ -321,7 +327,6 @@ public class WikipediaParser {
 					tempStr[0] = temp[1].replaceAll("\\]", "");
 				} else
 				{
-					System.out.println(text);
 					tempStr[0] = "";
 				    tempStr[1] = "";
 				}
@@ -347,7 +352,7 @@ public class WikipediaParser {
 			e.printStackTrace();
 		}
 
-		System.out.println("Text Before Parsing" + text);
+		
 		
 		// TODO Lang links - what to populate in Wikipedia document
 		// TODO Refactor regex expression to constants
@@ -393,13 +398,12 @@ public class WikipediaParser {
 			if (!tempArr[0].trim().equals(null)
 					&& !tempArr[0].trim().equals("")) {
 				wikipediaDocument.addLink(tempArr[0].trim());
-				// System.out.println("Link in wikipedia parser:" +
-				// tempArr[0].trim());
+				//System.out.println("Link in wikipedia parser:" +
+				//tempArr[1].trim());
 			}
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);
 		}
 
-		System.out.println("Text After PArsing@@" + tempText);
 		
 		// Fetching section
 		String[] sectionArr = tempText.split("[=]{2,6}");

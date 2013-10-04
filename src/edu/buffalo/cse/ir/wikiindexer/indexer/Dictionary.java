@@ -68,9 +68,12 @@ public abstract class Dictionary implements Writeable {
 		//TODO: Implement this method (FOR A BONUS)
 		ArrayList<String> keyMatches = new ArrayList<String>();
 		
-		Iterator<String> keyIterator = keyMatches.iterator();
+		boolean hasTerm = false;
+		
 		Set<String>keySet = termDictionary.keySet();
 		
+		queryStr=queryStr.replace("*", ".*");
+		queryStr=queryStr.replace("?", ".?");
 		Pattern queryPattern = Pattern.compile(queryStr);
 		
 		Iterator<String> setIterator = keySet.iterator();
@@ -83,18 +86,22 @@ public abstract class Dictionary implements Writeable {
 			if(m.matches())
 			{
 				keyMatches.add(key);
+				hasTerm= true;
 			}
 			
 		}
 		System.out.println("The keys found matcing the query are : \n" );
-		while(keyIterator.hasNext())
+		Iterator<String> keyIterator = keyMatches.iterator();
+		
+		if(hasTerm==true)
 		{
-			System.out.println(keyIterator.next()+"\n");
+			return keyMatches;
+		}
+		else
+		{
+			return null;
 		}
 		
-		
-		
-		return null;
 	}
 	
 	/**

@@ -17,7 +17,9 @@ public class LocalDictionary extends Dictionary {
 	 * Public default constructor
 	 * @param props: The properties file
 	 * @param field: The field being indexed by this dictionary
+	
 	 */
+	private static int docId=1;
 	public LocalDictionary(Properties props, INDEXFIELD field) {
 		super(props, field);
 		// TODO Auto-generated constructor stub
@@ -34,6 +36,19 @@ public class LocalDictionary extends Dictionary {
 	 */
 	public int lookup(String value) {
 		//TODO Implement this method
-		return -1;
-	}
+		if(termDictionary.get(value)!=null)
+		{
+			
+			return termDictionary.get(value);
+		}
+		else
+		{
+			
+			termDictionary.put(value,docId++);
+			
+			return termDictionary.get(value);
+		}
+		
+		
+		}
 }

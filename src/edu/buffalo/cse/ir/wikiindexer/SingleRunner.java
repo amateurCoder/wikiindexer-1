@@ -56,6 +56,7 @@ public class SingleRunner {
 	 * @param args
 	 * @throws InterruptedException 
 	 */
+	static int abc=0;	
 	public static void main(String[] args) throws InterruptedException {
 		if (args.length != 2) {
 			printUsage();
@@ -121,7 +122,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Author count:" + nAuthor);
+		//System.out.println("Author count:" + nAuthor);
 		
 		IndexReader indexReader1 = new IndexReader(null, INDEXFIELD.CATEGORY);
 		int nCategory=0;
@@ -142,7 +143,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Category count:" + nCategory);
+		//System.out.println("Category count:" + nCategory);
 		
 		
 		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
@@ -172,7 +173,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Term count:" + nTerm);
+		//System.out.println("Term count:" + nTerm);
 		
 		IndexReader indexReader3 = new IndexReader(null, INDEXFIELD.LINK);
 		int nLink=0;
@@ -192,7 +193,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Link count:" + nLink);
+		//System.out.println("Link count:" + nLink);
 		
 	}
 
@@ -221,6 +222,7 @@ public class SingleRunner {
 		
 		IndexableDocument idoc;
 		SharedDictionary docDict = new SharedDictionary(properties, INDEXFIELD.LINK);
+		
 		int currDocId;
 		ThreadedIndexerRunner termRunner = new ThreadedIndexerRunner(properties);
 		SingleIndexerRunner authIdxer = new SingleIndexerRunner(properties, INDEXFIELD.AUTHOR, INDEXFIELD.LINK, docDict, false);
@@ -231,6 +233,7 @@ public class SingleRunner {
 		System.out.println("Starting indexing.....");
 		start = System.currentTimeMillis();
 		double pctComplete = 0;
+		
 		for (int i = 0; i < numdocs; i++) {
 			try {
 				idoc = pool.take().get();
@@ -240,10 +243,10 @@ public class SingleRunner {
 					try {
 						for (INDEXFIELD fld : INDEXFIELD.values()) {
 							stream = idoc.getStream(fld);
-
+							
 							if (stream != null) {
 								tokenmap = stream.getTokenMap();
-
+								
 								if (tokenmap != null) {
 									switch (fld) {
 									case TERM:
@@ -255,16 +258,19 @@ public class SingleRunner {
 												currDocId, tokenmap);
 										break;
 									case CATEGORY:
+										
 										catIdxer.processTokenMap(currDocId,
 												tokenmap);
 										break;
-									case LINK:
+									case LINK:          
+											
 										linkIdxer.processTokenMap(
 												currDocId, tokenmap);
 										break;
 									}
 								}
 							}
+							
 
 						}
 					} catch (IndexerException e) {

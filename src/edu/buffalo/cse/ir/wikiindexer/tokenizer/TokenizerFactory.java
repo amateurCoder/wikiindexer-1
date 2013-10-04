@@ -70,7 +70,7 @@ public class TokenizerFactory {
 			}
 			if(field.toString().equalsIgnoreCase("LINK"))
 			{
-				return new Tokenizer(new CapitalizationRule());
+				return new Tokenizer();
 			
 			}
 			if(field.toString().equalsIgnoreCase("CATEGORY"))
