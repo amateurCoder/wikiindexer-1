@@ -22,7 +22,7 @@ public class EnglishStemmer implements TokenizerRule {
 	 * @see edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerRule#apply(edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream)
 	 */
 	public void apply(TokenStream stream) throws TokenizerException {
-//		System.out.println("in aenglish");
+		System.out.println("in aenglish:" + stream.getAllTokens());
 		if (stream != null) {
 			String token;
 			Stemmer s;
@@ -44,8 +44,8 @@ public class EnglishStemmer implements TokenizerRule {
 				}
 				
 			}
-			
 			stream.reset();
+			System.out.println("Outgoing aenglish:" + stream.getAllTokens());
 		}
 
 	}

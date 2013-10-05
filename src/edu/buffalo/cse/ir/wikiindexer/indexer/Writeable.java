@@ -23,6 +23,7 @@ public interface Writeable {
 	 * This method would be called to indicate completion of all indexing
 	 * The implementing classes should do all cleanup and post-processing
 	 * when this method is called.
+	 * @throws IndexerException 
 	 */
-	public abstract void cleanUp();
+	public abstract void cleanUp() throws IndexerException;
 }

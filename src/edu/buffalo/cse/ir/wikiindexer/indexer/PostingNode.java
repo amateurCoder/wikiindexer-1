@@ -2,7 +2,7 @@ package edu.buffalo.cse.ir.wikiindexer.indexer;
 
 import java.io.Serializable;
 
-public class PostingNode implements Serializable,Comparable {
+public class PostingNode implements Serializable {
 	/**
 	 * 
 	 */
@@ -25,13 +25,5 @@ public class PostingNode implements Serializable,Comparable {
 	}
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
-	}
-	
-	@Override
-	public int compareTo(Object obj) throws ClassCastException {
-		 if (!(obj instanceof PostingNode))
-		      throw new ClassCastException("A PostingNode object expected.");
-		    int frequency = ((PostingNode) obj).getFrequency();  
-		    return this.frequency - frequency;
 	}
 }

@@ -3,21 +3,14 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.omg.PortableServer.POA;
 
 /**
  * @author nikhillo This class is used to write an index to the disk
@@ -47,7 +40,8 @@ public class IndexWriter implements Writeable {
 	private static Map<Integer, LinkedList<PostingNode>> linkMap;
 	private String type;
 	
-	static int doc;
+	private FileOutputStream fileOutputStream;
+	private ObjectOutputStream objectOutputStream;
 
 	public IndexWriter(Properties props, INDEXFIELD keyField,
 			INDEXFIELD valueField) {
@@ -245,34 +239,23 @@ public class IndexWriter implements Writeable {
 	 * @see edu.buffalo.cse.ir.wikiindexer.indexer.Writeable#writeToDisk()
 	 */
 	public void writeToDisk() throws IndexerException {
-		FileOutputStream fileOutputStream;
-		ObjectOutputStream objectOutputStream;
 		try {
 			if (type.equalsIgnoreCase("AUTHOR")) {
-//				Collection<LinkedList<PostingNode>> coll = authMap.values();
-//				Collections.sort(authMap.);
-//				LinkedList<PostingNode> list = authMap.
 				fileOutputStream = new FileOutputStream("files/authMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(authMap);
-				objectOutputStream.close();
 			} else if (type.equalsIgnoreCase("CATEGORY")) {
 				fileOutputStream = new FileOutputStream("files/categoryMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(categoryMap);
-				objectOutputStream.close();
-				
 			} else if (type.equalsIgnoreCase("TERM")) {
 				fileOutputStream = new FileOutputStream("files/termMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(termMap);
-				objectOutputStream.close();
-				
 			} else if (type.equalsIgnoreCase("LINK")) {
 				fileOutputStream = new FileOutputStream("files/linkMap.txt");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(linkMap);
-				objectOutputStream.close();
 			}
 		} catch (FileNotFoundException e) {
 			throw new IndexerException(e.getMessage());
@@ -287,9 +270,12 @@ public class IndexWriter implements Writeable {
 	 * 
 	 * @see edu.buffalo.cse.ir.wikiindexer.indexer.Writeable#cleanUp()
 	 */
-	public void cleanUp() {
-		// TODO Implement this method
-
+	public void cleanUp() throws IndexerException {
+		try {
+			objectOutputStream.close();
+		} catch (IOException e) {
+			throw new IndexerException(e.getMessage());
+		}
 	}
 
 }

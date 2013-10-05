@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
@@ -39,7 +38,8 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 	Map<INDEXFIELD, Tokenizer> tempMap;
 	WikipediaDocument tempDoc;
 	IndexableDocument indexableDoc;
-static int emptydoc;
+	static int emptydoc;
+
 	public DocumentTransformer(Map<INDEXFIELD, Tokenizer> tknizerMap,
 			WikipediaDocument doc) {
 		tempMap = tknizerMap;
@@ -60,73 +60,56 @@ static int emptydoc;
 		for (Map.Entry<INDEXFIELD, Tokenizer> entry : tempMap.entrySet()) {
 
 			if (entry.getKey().toString().equalsIgnoreCase("AUTHOR")) {
-
 				TokenStream tempStream = new TokenStream(tempDoc.getAuthor());
-
 				entry.getValue().tokenize(tempStream);
-
 				Collection<String> coll = tempStream.getAllTokens();
 				Iterator<String> it = coll.iterator();
 				TokenStream finalStream = new TokenStream(it.next());
 				while (it.hasNext()) {
 					finalStream.append(it.next());
 				}
-
 				indexableDoc.addField(entry.getKey(), finalStream);
 			}
 			if (entry.getKey().toString().equalsIgnoreCase("LINK")) {
-
 				Set<String> tempLinkSet = tempDoc.getLinks();
 				Iterator<String> setIterator = tempLinkSet.iterator();
-				if (setIterator.hasNext() && null!=setIterator) {
+				if (setIterator.hasNext() && null != setIterator) {
 					TokenStream tempStream = new TokenStream(setIterator.next());
 					while (setIterator.hasNext()) {
-
 						tempStream.append(setIterator.next());
 					}
 					entry.getValue().tokenize(tempStream);
-										
-
 					Collection<String> coll = tempStream.getAllTokens();
 					Iterator<String> it = coll.iterator();
 					TokenStream finalStream = new TokenStream(it.next());
 					while (it.hasNext()) {
 						finalStream.append(it.next());
 					}
-						
-						
-							indexableDoc.addField(entry.getKey(), finalStream);
-						
-				}
-				else
-				{	
+
+					indexableDoc.addField(entry.getKey(), finalStream);
+				} 
+				else {
 					TokenStream finalStream = new TokenStream("nil");
 					indexableDoc.addField(entry.getKey(), finalStream);
 					//System.out.println(indexableDoc.getDocumentIdentifier());
 				}
 			} else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
-
 				List<String> tempCategoryList = tempDoc.getCategories();
-
 				Iterator<String> categorylistIterator = tempCategoryList
 						.listIterator();
-
 				if (categorylistIterator.hasNext()) {
 					TokenStream tempStream = new TokenStream(
 							categorylistIterator.next());
 					while (categorylistIterator.hasNext()) {
 						tempStream.append(categorylistIterator.next());
 					}
-
 					entry.getValue().tokenize(tempStream);
-
 					Collection<String> coll = tempStream.getAllTokens();
 					Iterator<String> it = coll.iterator();
 					TokenStream finalStream = new TokenStream(it.next());
 					while (it.hasNext()) {
 						finalStream.append(it.next());
 					}
-
 					indexableDoc.addField(entry.getKey(), finalStream);
 				}
 			}
@@ -144,13 +127,8 @@ static int emptydoc;
 						tempStream.append(tempIt.next().getTitle());
 						tempIt.previous();
 						tempStream.append(tempIt.next().getText());
-
 					}
-
-					// System.out.println("Before tokenization==="+tempStream.getAllTokens());
-
 					entry.getValue().tokenize(tempStream);
-
 					Collection<String> coll = tempStream.getAllTokens();
 					Iterator<String> it = coll.iterator();
 					if (it.hasNext()) {
@@ -160,12 +138,9 @@ static int emptydoc;
 						}
 						indexableDoc.addField(entry.getKey(), finalStream);
 					}
-
-					
 				}
 			}
 		}
-
 		return indexableDoc;
 	}
 
