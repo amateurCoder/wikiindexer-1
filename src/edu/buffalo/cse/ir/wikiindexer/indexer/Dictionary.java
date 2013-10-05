@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,14 +25,22 @@ import java.util.regex.Pattern;
  *         given index
  */
 public abstract class Dictionary implements Writeable {
-	public static Map<String, Integer> linkDictionary;
 
+	public static Map<String,Integer> linkDictionary;
+	public  Map<Integer,Integer> compressedLinkDictionary;
+	public  String docString;
 	FileOutputStream fileOutputStream;
 	ObjectOutputStream objectOutputStream;
+	public Dictionary (Properties props, INDEXFIELD field) {
+		//TODO Implement this method
+		docString= new String("");
+		
+		linkDictionary = new HashMap<String,Integer>();
+		compressedLinkDictionary = new LinkedHashMap<Integer,Integer>();
 
-	public Dictionary(Properties props, INDEXFIELD field) {
-		linkDictionary = new HashMap<String, Integer>();
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -71,11 +82,17 @@ public abstract class Dictionary implements Writeable {
 	 * @return true if found, false otherwise
 	 */
 	public boolean exists(String value) {
-		if (linkDictionary.get(value) != null) {
+		//TODO Implement this method
+		
+		if(docString.contains(value))
+		{
+			
 			return true;
 		}
+		
 		return false;
 	}
+	
 
 	/**
 	 * MEthod to lookup a given string from the dictionary. The query string can
@@ -89,32 +106,59 @@ public abstract class Dictionary implements Writeable {
 	 */
 	public Collection<String> query(String queryStr) {
 		ArrayList<String> keyMatches = new ArrayList<String>();
-
-		Set<String> keySet = linkDictionary.keySet();
-		boolean hasTerm = false;
-
-		queryStr = queryStr.replace("*", ".*");
-		queryStr = queryStr.replace("?", ".?");
-		Pattern queryPattern = Pattern.compile(queryStr);
-
-		Iterator<String> setIterator = keySet.iterator();
-
-		while (setIterator.hasNext()) {
-			String key = setIterator.next();
-			Matcher m = queryPattern.matcher(key);
-
-			if (m.matches()) {
-				keyMatches.add(key);
-				hasTerm = true;
+		ListIterator<String> resultListIterator = keyMatches.listIterator();
+		String match;
+		int secondIndex=0;
+		boolean hastext=false;
+	
+			queryStr=queryStr.replace("*", ".*");
+			queryStr=queryStr.replace("?", ".?");
+			Pattern queryPattern = Pattern.compile(queryStr);
+		
+			
+			Set<Integer> index = compressedLinkDictionary.keySet();
+			
+			Iterator<Integer> indexIterator = index.iterator();
+			indexIterator.next();
+			int firstIndex = indexIterator.next();
+			if(indexIterator.hasNext())
+			{
+			while(indexIterator.hasNext())
+			{
+				secondIndex= indexIterator.next();
+				match=(String) docString.subSequence(firstIndex , secondIndex);
+				firstIndex=secondIndex;
+				Matcher m=queryPattern.matcher(match);
+				if(m.matches())
+				{
+					resultListIterator.add(match);
+					hastext = true;
+				}
+				
 			}
-		}
-		System.out.println("The keys found matcing the query are : \n");
-		if (hasTerm == true) {
-			return keyMatches;
-		} else {
-			return null;
-		}
+			match=(String) docString.subSequence(secondIndex,docString.length());
+			firstIndex=secondIndex;
+			Matcher m=queryPattern.matcher(match);
+			if(m.matches())
+			{
+				resultListIterator.add(match);
+				hastext = true;
+			}
+			}
+	
+			if(hastext)
+			{
+				return keyMatches;
+			}
+			else
+			{
+				return null;
+			}
+			
 	}
+		
+		
+	
 
 	/**
 	 * Method to get the total number of terms in the dictionary
@@ -122,7 +166,13 @@ public abstract class Dictionary implements Writeable {
 	 * @return The size of the dictionary
 	 */
 	public int getTotalTerms() {
-		return linkDictionary.size();
+		//TODO: Implement this method
+		//return linkDictionary.size();
+		if(compressedLinkDictionary.size()>0)
+		return (compressedLinkDictionary.size()-1);
+		else
+			return 0;
+		
 
 	}
 }

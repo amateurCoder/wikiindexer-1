@@ -1,15 +1,10 @@
 package edu.buffalo.cse.ir.wikiindexer;
 
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 /**
@@ -34,9 +29,7 @@ import org.junit.runner.JUnitCore;
 
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants.RequiredConstant;
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
-import edu.buffalo.cse.ir.wikiindexer.indexer.IndexReader;
 import edu.buffalo.cse.ir.wikiindexer.indexer.IndexerException;
-import edu.buffalo.cse.ir.wikiindexer.indexer.PostingNode;
 import edu.buffalo.cse.ir.wikiindexer.indexer.SharedDictionary;
 import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
 import edu.buffalo.cse.ir.wikiindexer.test.AllTests;
@@ -57,11 +50,8 @@ public class SingleRunner {
 	/**
 	 * @param args
 	 * @throws InterruptedException 
-	 * @throws TokenizerException 
-	 * @throws IndexerException 
 	 */
-
-	public static void main(String[] args) throws InterruptedException, TokenizerException, IndexerException {
+	public static void main(String[] args) throws InterruptedException {
 		if (args.length != 2) {
 			printUsage();
 			System.exit(1);
@@ -75,12 +65,11 @@ public class SingleRunner {
 				} else  {
 					if (args[1] != null && args[1].length() == 2) {
 						String mode = args[1].substring(1).toLowerCase();
-						
+
 						if ("t".equals(mode)) {
 							runTests(filename);
 						} else if ("i".equals(mode)) {
-//							runIndexer(properties);
-							readIndexer();
+							runIndexer(properties);
 						} else if ("b".equals(mode)) {
 							runTests(filename);
 							runIndexer(properties);
@@ -103,176 +92,42 @@ public class SingleRunner {
 		}
 
 	}
-	
-	private static void readIndexer() throws IndexerException, TokenizerException {
-		IndexReader indexReader = new IndexReader(null, INDEXFIELD.AUTHOR);
-		int nAuthor=0;
-		try {
-			nAuthor= indexReader.getTotalKeyTerms();
-//			System.out.println("TOTAL DICT SIZE:" + indexReader.getTotalValueTerms());
-			/*Map<String,Integer> coll = indexReader.getPostings("Martarius");
-			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
-				System.out.println("Keyqq : " + entry.getKey() + " Valueqq : "
-					+ entry.getValue());
-			}*/
-			/*Collection<String> strColl = indexReader.getTopK(5);
-			Iterator<String> it = strColl.iterator();
-			while(it.hasNext()){
-				System.out.println("AUTHOR TERM:" + it.next());
-			}*/
-			/*Map<String, LinkedList<PostingNode>> map = indexReader.getMap();
-//			System.out.println("Map size:" + map.size());
-			Iterator iterator = map.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
-				System.out.println("Map Key==="+ mapEntry.getKey());
-				for(int i=1;i<list.size();i++){
-					PostingNode pn = list.get(i);
-					System.out.println(":Author Posting data==="+pn.getValue()+":Posting freq===" + pn.getFrequency());
-				}
-//				System.out.println("Link posting list: "+ list);
-			}*/
-		} catch (IndexerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//System.out.println("Author count:" + nAuthor);
-		
-		IndexReader indexReader1 = new IndexReader(null, INDEXFIELD.CATEGORY);
-		int nCategory=0;
-//		try {
-			nCategory = indexReader1.getTotalKeyTerms();
-			Collection<String> strColl = indexReader1.getTopK(5);
-			Iterator<String> it = strColl.iterator();
-			while(it.hasNext()){
-				System.out.println("CATEGORY TERM:" + it.next());
-			}/*
-			Map<String, LinkedList<PostingNode>> map = indexReader1.getMap();
-			Iterator iterator = map.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
-				System.out.println("Map Key==="+ mapEntry.getKey());
-				for(int i=1;i<list.size();i++){
-					PostingNode pn = list.get(i);
-					System.out.println("Term Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
-				}
-			}
-		} catch (IndexerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		//System.out.println("Category count:" + nCategory);
-		
-		
-		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
-		int nTerm=0;
-		Collection<String> strColl1 = indexReader2.getTopK(5);
-		Iterator<String> it1 = strColl1.iterator();
-		while(it1.hasNext()){
-			System.out.println("TERM::::" + it1.next());
-		}
-//		try {
-//		String [] terms = {"Swing","must","Mexico","impress"};
-		/*Map<String, Integer> map = indexReader2.query(terms);
-		for (Map.Entry<String, Integer> entry : map.entrySet()) {
-			System.out.println("Keyyyy : " + entry.getKey() + " Valueeeee : "
-				+ entry.getValue());
-		}*/
-			/*Map<String,Integer> coll = indexReader2.getPostings("Swing");
-			System.out.println("###"+ coll.toString());
-//			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
-//				System.out.println("Key : " + entry.getKey() + " Value : "
-//					+ entry.getValue());
-//			}
-			FileWriter fw = new FileWriter("files/termOut.txt");
-			BufferedWriter bw = new BufferedWriter(fw);
-//			nTerm = indexReader2.getTotalKeyTerms();
-			Map<String, LinkedList<PostingNode>> map = indexReader2.getMap();
-			Iterator iterator = map.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
-//				System.out.println("Map Key==="+ mapEntry.getKey());
-				bw.write(mapEntry.getKey().toString());
-				for(int i=1;i<list.size();i++){
-					PostingNode pn = list.get(i);
-					bw.write(":Term Posting data:"+pn.getValue()+",Posting freq:" + pn.getFrequency());
-				}
-				bw.write("\n");
-			}
-			bw.close();
-		} catch (IndexerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
-		//System.out.println("Term count:" + nTerm);
-		
-		IndexReader indexReader3 = new IndexReader(null, INDEXFIELD.LINK);
-		//int nLink=0;
-		//try {
-		//	nLink = indexReader3.getTotalKeyTerms();
-			/*Map<Integer, LinkedList<PostingNode>> map = indexReader3.getLinkMap();
-			Iterator iterator = map.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
-				for(int i=1;i<list.size();i++){
-					PostingNode pn = list.get(i);
-					System.out.println("Link Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
-				}
-			}*/
-		/*} catch (IndexerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-<<<<<<< HEAD
-		}*/
-		//System.out.println("Link count:" + nLink);
-		//}
-	
-		}
-	private static void runIndexer(Properties properties) throws InterruptedException, TokenizerException {
+
+	private static void runIndexer(Properties properties) throws InterruptedException {
 		long start;
 		System.out.println("Starting .......");
 		ArrayList<WikipediaDocument> list = new ArrayList<WikipediaDocument>();
 		Parser parser = new Parser(properties);
 		start = System.currentTimeMillis();
 		parser.parse(FileUtil.getDumpFileName(properties), list);
-		
+
 		System.out.println("Finished parsing: " + (System.currentTimeMillis() - start));
 		Map<INDEXFIELD, Tokenizer> tknizerMap;
 		ExecutorService svc = Executors.newSingleThreadExecutor();
 		CompletionService<IndexableDocument> pool = new ExecutorCompletionService<IndexableDocument>(svc);
 		int numdocs = list.size();
-		
+
 		start = System.currentTimeMillis();
 		System.out.println("Starting tokenization");
 		for (WikipediaDocument doc : list) {
 			tknizerMap = initMap(properties);
 			pool.submit(new DocumentTransformer(tknizerMap, doc));
 		}
-		
+
 		System.out.println("Submitted tokenization: " + (System.currentTimeMillis() - start));
-		
+
 		IndexableDocument idoc;
 		SharedDictionary docDict = new SharedDictionary(properties, INDEXFIELD.LINK);
-		
 		int currDocId;
 		ThreadedIndexerRunner termRunner = new ThreadedIndexerRunner(properties);
 		SingleIndexerRunner authIdxer = new SingleIndexerRunner(properties, INDEXFIELD.AUTHOR, INDEXFIELD.LINK, docDict, false);
 		SingleIndexerRunner catIdxer = new SingleIndexerRunner(properties, INDEXFIELD.CATEGORY, INDEXFIELD.LINK, docDict, false);
 		SingleIndexerRunner linkIdxer = new SingleIndexerRunner(properties, INDEXFIELD.LINK, INDEXFIELD.LINK, docDict, true);
 		Map<String, Integer> tokenmap;
-		
+
 		System.out.println("Starting indexing.....");
 		start = System.currentTimeMillis();
 		double pctComplete = 0;
-		
 		for (int i = 0; i < numdocs; i++) {
 			try {
 				idoc = pool.take().get();
@@ -282,10 +137,10 @@ public class SingleRunner {
 					try {
 						for (INDEXFIELD fld : INDEXFIELD.values()) {
 							stream = idoc.getStream(fld);
-							
+
 							if (stream != null) {
 								tokenmap = stream.getTokenMap();
-								
+
 								if (tokenmap != null) {
 									switch (fld) {
 									case TERM:
@@ -297,19 +152,16 @@ public class SingleRunner {
 												currDocId, tokenmap);
 										break;
 									case CATEGORY:
-										
 										catIdxer.processTokenMap(currDocId,
 												tokenmap);
 										break;
-									case LINK:          
-											
+									case LINK:
 										linkIdxer.processTokenMap(
 												currDocId, tokenmap);
 										break;
 									}
 								}
 							}
-							
 
 						}
 					} catch (IndexerException e) {
@@ -321,16 +173,16 @@ public class SingleRunner {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			pctComplete = (i * 100.0d) / numdocs;
-			
+
 			if (pctComplete % 10 == 0) {
 				System.out.println(pctComplete+ "% submission complete");
 			}
 		}
-		
+
 		System.out.println("Submitted all tasks in: " + (System.currentTimeMillis() - start));
-		
+
 		try {
 			termRunner.cleanup();
 			authIdxer.cleanup();
@@ -342,7 +194,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("Waiting for all tasks to complete");
 		while (termRunner.isFinished() && authIdxer.isFinished() && catIdxer.isFinished() && linkIdxer.isFinished()) {
 			//do nothing
@@ -350,16 +202,25 @@ public class SingleRunner {
 		}
 		System.out.println("Process complete: " + (System.currentTimeMillis() - start));
 		svc.shutdown();
-		
+
+
+
+
+
 	}
-	
-	private static Map<INDEXFIELD, Tokenizer> initMap(Properties props) throws TokenizerException {
+
+	private static Map<INDEXFIELD, Tokenizer> initMap(Properties props) {
 		HashMap<INDEXFIELD, Tokenizer> map = new HashMap<INDEXFIELD, Tokenizer>(INDEXFIELD.values().length);
 		TokenizerFactory fact = TokenizerFactory.getInstance(props);
 		for (INDEXFIELD fld : INDEXFIELD.values()) {
-			map.put(fld, fact.getTokenizer(fld));
+			try {
+				map.put(fld, fact.getTokenizer(fld));
+			} catch (TokenizerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
+
 		return map;
 	}
 
@@ -375,9 +236,9 @@ public class SingleRunner {
 		System.err.println("-t: Only execute tests");
 		System.err.println("-i: Only run the indexer");
 		System.err.println("-b: Run both, tests first then indexer");
-		
+
 	}
-	
+
 	/**
 	 * Method to execute all tests
 	 * @param filename: Filename for the properties file
@@ -386,9 +247,9 @@ public class SingleRunner {
 		System.setProperty("PROPSFILENAME", filename);
 		JUnitCore core = new JUnitCore();
 		core.run(new Computer(), AllTests.class);
-		
+
 	}
-	
+
 	/**
 	 * Method to load the Properties object from the given file name
 	 * @param filename: The filename from which to load Properties
@@ -398,7 +259,7 @@ public class SingleRunner {
 
 		try {
 			Properties props = FileUtil.loadProperties(filename);
-			
+
 			if (validateProps(props)) {
 				return props;
 			} else {
@@ -410,10 +271,10 @@ public class SingleRunner {
 		} catch (IOException e) {
 			System.err.println("Error while reading properties from the specified file: " + filename);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Method to validate that the properties object has been correctly loaded
 	 * @param props: The Properties object to validate
@@ -426,7 +287,7 @@ public class SingleRunner {
 			Field[] flds = IndexerConstants.class.getDeclaredFields();
 			boolean valid = true;
 			Object key;
-			
+
 			for (Field f : flds) {
 				if (f.isAnnotationPresent(RequiredConstant.class) ) {
 					try {
@@ -436,16 +297,16 @@ public class SingleRunner {
 							valid = false;
 						}
 					} catch (IllegalArgumentException e) {
-						
+
 					} catch (IllegalAccessException e) {
-						
+
 					}
 				}
 			}
-			
+
 			return valid;
 		}
-		
+
 		return false;
 	}
 

@@ -20,7 +20,7 @@ public class IndexableDocument {
 	 */
 
 	private String docId;
-	private static int doc;
+
 
 	private HashMap<INDEXFIELD, TokenStream> indexMap;
 
@@ -70,7 +70,9 @@ public class IndexableDocument {
 	 * @return A unique identifier for the given document
 	 */
 	public String getDocumentIdentifier() {
-		return docId.trim();
+		//TODO: Implement this method
+		//System.out.println(docId);
+		return docId;
 	}
 
 }
