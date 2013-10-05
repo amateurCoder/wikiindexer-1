@@ -189,6 +189,7 @@ public class IndexReader {
 		// Read dictionary map from disk
 		Map<String, Integer> dictMap = readDictionaryFromDisk();
 
+		// Iterating over Index
 		Iterator<Entry<String, LinkedList<PostingNode>>> iterator = tempMap
 				.entrySet().iterator();
 		while (iterator.hasNext()) {
@@ -196,12 +197,14 @@ public class IndexReader {
 			if (indexMapEntry.getKey().equals(key)) {
 				LinkedList<PostingNode> list = (LinkedList<PostingNode>) indexMapEntry
 						.getValue();
+				int temp = 0;
 				for (int i = 1; i < list.size(); i++) {
 					PostingNode pn = list.get(i);
+					temp += pn.getValue();
 					// Iterating over shared dictionary
 					for (Map.Entry<String, Integer> dictEntry : dictMap
 							.entrySet()) {
-						if (pn.getValue() == dictEntry.getValue()) {
+						if (temp == dictEntry.getValue()) {
 							finalPostingMap.put(dictEntry.getKey(),
 									pn.getFrequency());
 						}
@@ -225,21 +228,24 @@ public class IndexReader {
 				.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry indexMapEntry = (Map.Entry) iterator.next();
-			if (indexMapEntry.getKey() == key) {
+			if (indexMapEntry.getKey().equals(key)) {
 				LinkedList<PostingNode> list = (LinkedList<PostingNode>) indexMapEntry
 						.getValue();
+				int temp = 0;
 				for (int i = 1; i < list.size(); i++) {
 					PostingNode pn = list.get(i);
+					temp += pn.getValue();
 					// Iterating over shared dictionary
 					for (Map.Entry<String, Integer> dictEntry : dictMap
 							.entrySet()) {
-						if (pn.getValue() == dictEntry.getValue()) {
+						if (temp == dictEntry.getValue()) {
 							finalPostingMap.put(dictEntry.getKey(),
 									pn.getFrequency());
 						}
 					}
 				}
 			}
+
 		}
 		return finalPostingMap;
 	}

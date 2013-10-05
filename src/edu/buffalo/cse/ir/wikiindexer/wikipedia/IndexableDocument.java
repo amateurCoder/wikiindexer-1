@@ -70,7 +70,7 @@ public class IndexableDocument {
 	 * @return A unique identifier for the given document
 	 */
 	public String getDocumentIdentifier() {
-		return docId + "doc" + doc++;
+		return docId.trim();
 	}
 
 }

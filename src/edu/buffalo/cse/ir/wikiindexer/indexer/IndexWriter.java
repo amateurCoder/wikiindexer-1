@@ -39,7 +39,7 @@ public class IndexWriter implements Writeable {
 	private static Map<String, LinkedList<PostingNode>> termMap;
 	private static Map<Integer, LinkedList<PostingNode>> linkMap;
 	private String type;
-	
+
 	private FileOutputStream fileOutputStream;
 	private ObjectOutputStream objectOutputStream;
 
@@ -110,20 +110,27 @@ public class IndexWriter implements Writeable {
 		int nOccurances = 0;
 		if (null != linkMap) {
 			if (linkMap.containsKey(keyId)) {
+				// Updating the total count in the first node
 				nOccurances = linkMap.get(keyId).get(0).getFrequency();
 				nOccurances = nOccurances + numOccurances;
 				linkMap.get(keyId).get(0).setFrequency(nOccurances);
-				PostingNode postingNode = new PostingNode(valueId,
+				// Creating new node
+				int cumulative = 0;
+				for (int i = 0; i < linkMap.get(keyId).size(); i++) {
+					cumulative += linkMap.get(keyId).get(i).getValue();
+				}
+				cumulative = valueId - cumulative;
+				PostingNode postingNode = new PostingNode(cumulative,
 						numOccurances);
-				linkMap.get(keyId).add(postingNode);
-				
+				authMap.get(keyId).addLast(postingNode);
 			} else {
 				LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 				linkedList.addFirst(new PostingNode(0, numOccurances));
 				PostingNode node = new PostingNode(valueId, numOccurances);
-				linkedList.add(node);
+				linkedList.addLast(node);
 				linkMap.put(keyId, linkedList);
 			}
+
 		}
 	}
 
@@ -164,17 +171,24 @@ public class IndexWriter implements Writeable {
 		if (type.equalsIgnoreCase("AUTHOR")) {
 			if (null != authMap) {
 				if (authMap.containsKey(key)) {
+					// Updating the total count in the first node
 					nOccurances = authMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
 					authMap.get(key).get(0).setFrequency(nOccurances);
-					PostingNode postingNode = new PostingNode(valueId,
+					// Creating new node
+					int cumulative = 0;
+					for (int i = 0; i < authMap.get(key).size(); i++) {
+						cumulative += authMap.get(key).get(i).getValue();
+					}
+					cumulative = valueId - cumulative;
+					PostingNode postingNode = new PostingNode(cumulative,
 							numOccurances);
-					authMap.get(key).add(postingNode);
+					authMap.get(key).addLast(postingNode);
 				} else {
 					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 					linkedList.addFirst(new PostingNode(0, numOccurances));
 					PostingNode node = new PostingNode(valueId, numOccurances);
-					linkedList.add(node);
+					linkedList.addLast(node);
 					authMap.put(key, linkedList);
 				}
 			}
@@ -184,14 +198,20 @@ public class IndexWriter implements Writeable {
 					nOccurances = categoryMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
 					categoryMap.get(key).get(0).setFrequency(nOccurances);
-					PostingNode postingNode = new PostingNode(valueId,
+					// Creating new node
+					int cumulative = 0;
+					for (int i = 0; i < categoryMap.get(key).size(); i++) {
+						cumulative += categoryMap.get(key).get(i).getValue();
+					}
+					cumulative = valueId - cumulative;
+					PostingNode postingNode = new PostingNode(cumulative,
 							numOccurances);
-					categoryMap.get(key).add(postingNode);
+					categoryMap.get(key).addLast(postingNode);
 				} else {
 					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 					linkedList.addFirst(new PostingNode(0, numOccurances));
 					PostingNode node = new PostingNode(valueId, numOccurances);
-					linkedList.add(node);
+					linkedList.addLast(node);
 					categoryMap.put(key, linkedList);
 				}
 			}
@@ -201,14 +221,20 @@ public class IndexWriter implements Writeable {
 					nOccurances = termMap.get(key).get(0).getFrequency();
 					nOccurances = nOccurances + numOccurances;
 					termMap.get(key).get(0).setFrequency(nOccurances);
-					PostingNode postingNode = new PostingNode(valueId,
+					// Creating new node
+					int cumulative = 0;
+					for (int i = 0; i < termMap.get(key).size(); i++) {
+						cumulative += termMap.get(key).get(i).getValue();
+					}
+					cumulative = valueId - cumulative;
+					PostingNode postingNode = new PostingNode(cumulative,
 							numOccurances);
-					termMap.get(key).add(postingNode);
+					termMap.get(key).addLast(postingNode);
 				} else {
 					LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 					linkedList.addFirst(new PostingNode(0, numOccurances));
 					PostingNode node = new PostingNode(valueId, numOccurances);
-					linkedList.add(node);
+					linkedList.addLast(node);
 					termMap.put(key, linkedList);
 				}
 			}

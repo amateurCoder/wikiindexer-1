@@ -109,10 +109,10 @@ public class SingleRunner {
 		int nAuthor=0;
 		try {
 			nAuthor= indexReader.getTotalKeyTerms();
-			System.out.println("TOTAL DICT SIZE:" + indexReader.getTotalValueTerms());
-			/*Map<String,Integer> coll = indexReader.getPostings("Addbot");
+//			System.out.println("TOTAL DICT SIZE:" + indexReader.getTotalValueTerms());
+			/*Map<String,Integer> coll = indexReader.getPostings("Martarius");
 			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
-				System.out.println("Key : " + entry.getKey() + " Value : "
+				System.out.println("Keyqq : " + entry.getKey() + " Valueqq : "
 					+ entry.getValue());
 			}*/
 			/*Collection<String> strColl = indexReader.getTopK(5);
@@ -141,10 +141,14 @@ public class SingleRunner {
 		
 		IndexReader indexReader1 = new IndexReader(null, INDEXFIELD.CATEGORY);
 		int nCategory=0;
-		try {
+//		try {
 			nCategory = indexReader1.getTotalKeyTerms();
-			
-			/*Map<String, LinkedList<PostingNode>> map = indexReader1.getMap();
+			Collection<String> strColl = indexReader1.getTopK(5);
+			Iterator<String> it = strColl.iterator();
+			while(it.hasNext()){
+				System.out.println("CATEGORY TERM:" + it.next());
+			}/*
+			Map<String, LinkedList<PostingNode>> map = indexReader1.getMap();
 			Iterator iterator = map.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry mapEntry = (Map.Entry) iterator.next();
@@ -154,24 +158,29 @@ public class SingleRunner {
 					PostingNode pn = list.get(i);
 					System.out.println("Term Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
 				}
-			}*/
+			}
 		} catch (IndexerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		//System.out.println("Category count:" + nCategory);
 		
 		
 		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
 		int nTerm=0;
-		try {
+		Collection<String> strColl1 = indexReader2.getTopK(5);
+		Iterator<String> it1 = strColl1.iterator();
+		while(it1.hasNext()){
+			System.out.println("TERM::::" + it1.next());
+		}
+//		try {
 //		String [] terms = {"Swing","must","Mexico","impress"};
 		/*Map<String, Integer> map = indexReader2.query(terms);
 		for (Map.Entry<String, Integer> entry : map.entrySet()) {
 			System.out.println("Keyyyy : " + entry.getKey() + " Valueeeee : "
 				+ entry.getValue());
 		}*/
-			Map<String,Integer> coll = indexReader2.getPostings("Swing");
+			/*Map<String,Integer> coll = indexReader2.getPostings("Swing");
 			System.out.println("###"+ coll.toString());
 //			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
 //				System.out.println("Key : " + entry.getKey() + " Value : "
@@ -200,7 +209,7 @@ public class SingleRunner {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		//System.out.println("Term count:" + nTerm);
 		
