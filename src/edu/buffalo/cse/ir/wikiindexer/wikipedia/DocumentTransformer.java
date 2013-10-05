@@ -99,9 +99,10 @@ static int emptydoc;
 						
 				}
 				else
-				{
+				{	
 					TokenStream finalStream = new TokenStream("nil");
 					indexableDoc.addField(entry.getKey(), finalStream);
+					//System.out.println(indexableDoc.getDocumentIdentifier());
 				}
 			} else if (entry.getKey().toString().equalsIgnoreCase("CATEGORY")) {
 

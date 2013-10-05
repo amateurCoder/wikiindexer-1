@@ -105,7 +105,7 @@ public class SingleRunner {
 		int nAuthor=0;
 		try {
 			nAuthor= indexReader.getTotalKeyTerms();
-			/*Map<String, LinkedList<PostingNode>> map = indexReader.getMap();
+			Map<String, LinkedList<PostingNode>> map = indexReader.getMap();
 //			System.out.println("Map size:" + map.size());
 			Iterator iterator = map.entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -117,7 +117,7 @@ public class SingleRunner {
 					System.out.println(":Author Posting data==="+pn.getValue()+":Posting freq===" + pn.getFrequency());
 				}
 //				System.out.println("Link posting list: "+ list);
-			}*/
+			}
 		} catch (IndexerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

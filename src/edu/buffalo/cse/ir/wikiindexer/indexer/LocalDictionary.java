@@ -19,10 +19,13 @@ public class LocalDictionary extends Dictionary {
 	 * @param field: The field being indexed by this dictionary
 	
 	 */
-	private static int docId=1;
+	private static int docId;
 	public LocalDictionary(Properties props, INDEXFIELD field) {
 		super(props, field);
 		// TODO Auto-generated constructor stub
+		docId=0;
+		docString+="nil";
+		compressedLinkDictionary.put(docString.indexOf("nil"),docId++);
 	}
 	
 	/**
@@ -36,17 +39,20 @@ public class LocalDictionary extends Dictionary {
 	 */
 	public int lookup(String value) {
 		//TODO Implement this method
-		if(termDictionary.get(value)!=null)
+		
+		if(docString.contains(value))
+			
 		{
 			
-			return termDictionary.get(value);
+			return compressedLinkDictionary.get(docString.indexOf(value));
 		}
 		else
 		{
 			
-			termDictionary.put(value,docId++);
-			
-			return termDictionary.get(value);
+			docString+=value; 
+			compressedLinkDictionary.put(docString.indexOf(value),docId);
+					
+			return docId++;
 		}
 		
 		

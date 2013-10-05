@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import edu.buffalo.cse.ir.wikiindexer.indexer.Dictionary;
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.indexer.LocalDictionary;
 import edu.buffalo.cse.ir.wikiindexer.test.PropertiesBasedTest;
@@ -43,6 +44,8 @@ public class LocalDictionaryTest extends PropertiesBasedTest {
 		for (INDEXFIELD fld : testarr) {
 			LocalDictionary dict = new LocalDictionary(idxProps, fld);
 			int retVal = dict.lookup("test");
+			//System.out.println(retVal);
+			
 			assertTrue(retVal > 0);
 
 			// test same return value
@@ -73,10 +76,12 @@ public class LocalDictionaryTest extends PropertiesBasedTest {
 			LocalDictionary dict = new LocalDictionary(idxProps, fld);
 			
 			//test with empty
+			
 			assertFalse(dict.exists("test"));
 			
 			//assert after addition
 			dict.lookup("test");
+		
 			assertTrue(dict.exists("test"));
 
 			// test with different values
@@ -100,7 +105,7 @@ public class LocalDictionaryTest extends PropertiesBasedTest {
 	public final void testQuery() {
 		INDEXFIELD testarr[] = INDEXFIELD.values();
 
-		for (INDEXFIELD fld : testarr) {
+	for (INDEXFIELD fld : testarr) {
 			LocalDictionary dict = new LocalDictionary(idxProps, fld);
 			
 			//pre-populate with known terms

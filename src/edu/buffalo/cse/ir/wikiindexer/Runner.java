@@ -354,7 +354,7 @@ public class Runner {
 			authIdxer.cleanup();
 			catIdxer.cleanup();
 			linkIdxer.cleanup();
-			System.out.println("Shared Dictionary: "+Dictionary.termDictionary);
+			System.out.println("Shared Dictionary: "+Dictionary.linkDictionary);
 			docDict.writeToDisk();
 			docDict.cleanUp();
 		} catch (IndexerException e) {
