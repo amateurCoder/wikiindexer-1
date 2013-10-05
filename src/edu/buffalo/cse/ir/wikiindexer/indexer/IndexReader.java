@@ -20,6 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.Tokenizer;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerFactory;
+
 /**
  * @author nikhillo This class is used to introspect a given index The
  *         expectation is the class should be able to read the index and all
@@ -115,24 +120,67 @@ public class IndexReader {
 	 * @return The postings list with the value term as the key and the number
 	 *         of occurrences as value. An ordering is not expected on the map
 	 * @throws IndexerException
+	 * @throws TokenizerException
 	 */
-	public Map<String, Integer> getPostings(String key) throws IndexerException {
+	public Map<String, Integer> getPostings(String key)
+			throws IndexerException, TokenizerException {
 		if (types.equalsIgnoreCase("AUTHOR")) {
+			TokenizerFactory tf = TokenizerFactory.getInstance(indexProp);
+			Tokenizer tk = tf.getTokenizer(INDEXFIELD.AUTHOR);
+			TokenStream stream = new TokenStream(key);
+			tk.tokenize(stream);
+			Collection<String> coll = stream.getAllTokens();
+			Iterator<String> it = coll.iterator();
+			String str = "";
+			while (it.hasNext()) {
+				str += it.next();
+			}
 			authMap = readInvertibleIndex(types);
-			return populatePostingMap(key, authMap);
+			return populatePostingMap(str, authMap);
 		} else if (types.equalsIgnoreCase("CATEGORY")) {
+			TokenizerFactory tf = TokenizerFactory.getInstance(indexProp);
+			Tokenizer tk = tf.getTokenizer(INDEXFIELD.CATEGORY);
+			TokenStream stream = new TokenStream(key);
+			tk.tokenize(stream);
+			Collection<String> coll = stream.getAllTokens();
+			Iterator<String> it = coll.iterator();
+			String str = "";
+			while (it.hasNext()) {
+				str += it.next();
+			}
 			categoryMap = readInvertibleIndex(types);
-			return populatePostingMap(key, categoryMap);
+			return populatePostingMap(str, categoryMap);
 		} else if (types.equalsIgnoreCase("TERM")) {
+			TokenizerFactory tf = TokenizerFactory.getInstance(indexProp);
+			Tokenizer tk = tf.getTokenizer(INDEXFIELD.TERM);
+			TokenStream stream = new TokenStream(key);
+			tk.tokenize(stream);
+			Collection<String> coll = stream.getAllTokens();
+			Iterator<String> it = coll.iterator();
+			String str = "";
+			while (it.hasNext()) {
+				str += it.next();
+			}
 			termMap = readInvertibleIndex(types);
-			return populatePostingMap(key, termMap);
+			return populatePostingMap(str, termMap);
 		} else if (types.equalsIgnoreCase("LINK")) {
+			TokenizerFactory tf = TokenizerFactory.getInstance(indexProp);
+			Tokenizer tk = tf.getTokenizer(INDEXFIELD.LINK);
+			TokenStream stream = new TokenStream(key);
+			tk.tokenize(stream);
+			Collection<String> coll = stream.getAllTokens();
+			Iterator<String> it = coll.iterator();
+			String str = "";
+			while (it.hasNext()) {
+				str += it.next();
+			}
 			linkMap = readForwardIndex(types);
-			return populateLinkPostingMap(key, linkMap);
+			return populateLinkPostingMap(str, linkMap);
 		}
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map<String, Integer> populatePostingMap(String key,
 			Map<String, LinkedList<PostingNode>> tempMap)
 			throws IndexerException {
@@ -164,6 +212,7 @@ public class IndexReader {
 		return finalPostingMap;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map<String, Integer> populateLinkPostingMap(String key,
 			Map<Integer, LinkedList<PostingNode>> tempMap)
 			throws IndexerException {
@@ -195,6 +244,7 @@ public class IndexReader {
 		return finalPostingMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Integer> readDictionaryFromDisk()
 			throws IndexerException {
 		Map<String, Integer> dictMap;
@@ -246,7 +296,6 @@ public class IndexReader {
 				} else {
 					break;
 				}
-
 			}
 			return collKey;
 		} else if (types.equalsIgnoreCase("CATEGORY")) {
@@ -356,7 +405,6 @@ public class IndexReader {
 		for (Map.Entry<String, Integer> entry : entries) {
 			sortedMap.put(entry.getKey(), entry.getValue());
 		}
-
 		return sortedMap;
 	}
 
@@ -370,8 +418,10 @@ public class IndexReader {
 	 *         occurrences across the different postings. The value with the
 	 *         highest cumulative count should be the first entry in the map.
 	 * @throws IndexerException
+	 * @throws TokenizerException
 	 */
-	public Map<String, Integer> query(String... terms) throws IndexerException {
+	public Map<String, Integer> query(String... terms) throws IndexerException,
+			TokenizerException {
 		Map<String, Integer> queryResult = new HashMap<String, Integer>();
 		ArrayList<Map<String, Integer>> linkedListArray = new ArrayList<Map<String, Integer>>();
 		for (int i = 0; i < terms.length; i++) {
@@ -404,6 +454,7 @@ public class IndexReader {
 		return mergedMap;
 	}
 
+	@SuppressWarnings({ "unchecked", "resource" })
 	private Map<String, LinkedList<PostingNode>> readInvertibleIndex(
 			String types) throws IndexerException {
 		FileInputStream fileInputStream;
@@ -442,6 +493,7 @@ public class IndexReader {
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "resource" })
 	private Map<Integer, LinkedList<PostingNode>> readForwardIndex(String types)
 			throws IndexerException {
 		FileInputStream fileInputStream;
@@ -464,72 +516,5 @@ public class IndexReader {
 			throw new IndexerException(e.getMessage());
 		}
 		return null;
-	}
-
-	private int getValueCount(String types) {
-		Iterator iterator;
-		int count = 0;
-		if (types.equalsIgnoreCase("AUTHOR")) {
-			iterator = authMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry
-						.getValue();
-				System.out.println("Author Key:" + mapEntry.getKey());
-				for (int i = 1; i < list.size(); i++) {
-					PostingNode pn = list.get(i);
-					System.out.println("Author Posting data:" + pn.getValue()
-							+ " Posting freq:" + pn.getFrequency());
-				}
-				count += list.size() - 1;// excluding number of occurances field
-			}
-			return count;
-		} else if (types.equalsIgnoreCase("CATEGORY")) {
-			iterator = categoryMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry
-						.getValue();
-				System.out.println("Category Key:" + mapEntry.getKey());
-				for (int i = 1; i < list.size(); i++) {
-					PostingNode pn = list.get(i);
-					System.out.println("Category Posting data:" + pn.getValue()
-							+ " Posting freq:" + pn.getFrequency());
-				}
-				count += list.size() - 1;// excluding number of occurances field
-			}
-			return count;
-		} else if (types.equalsIgnoreCase("TERM")) {
-			iterator = termMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry
-						.getValue();
-				System.out.println("Term Key:" + mapEntry.getKey());
-				for (int i = 1; i < list.size(); i++) {
-					PostingNode pn = list.get(i);
-					System.out.println("Term Posting data:" + pn.getValue()
-							+ " Posting freq:" + pn.getFrequency());
-				}
-				count += list.size() - 1;// excluding number of occurances field
-			}
-			return count;
-		} else if (types.equalsIgnoreCase("LINK")) {
-			iterator = linkMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry
-						.getValue();
-				System.out.println("Link Key:" + mapEntry.getKey());
-				for (int i = 1; i < list.size(); i++) {
-					PostingNode pn = list.get(i);
-					System.out.println("Link Posting data:" + pn.getValue()
-							+ " Posting freq:" + pn.getFrequency());
-				}
-				count += list.size() - 1;// excluding number of occurances field
-			}
-			return count;
-		}
-		return 0;
 	}
 }

@@ -11,8 +11,8 @@ public class SpecialCharRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-//			System.out.println("Incoming Stream in special chars:"
-//					+ stream.getAllTokens());
+			System.out.println("Incoming Stream in special chars:"
+					+ stream.getAllTokens());
 			String token = "", finalToken = "";
 			String[] tempArr;
 			int nTokens = 0;
@@ -30,6 +30,7 @@ public class SpecialCharRule implements TokenizerRule {
 				}
 			}
 			if (finalToken != null) {
+				finalToken = finalToken.replaceAll("[^\\x00-\\x7F]", " ");
 				if (finalToken
 						.matches(".*?[\\~\\@\\#\\$\\%\\*\\=\\^\\&\\+\\:\\;\\<\\>\\|\\\"\\,\\_\\/\\\\\\(\\)\\[\\]]+.*?")) {
 					finalToken = finalToken.replaceAll(
@@ -77,8 +78,8 @@ public class SpecialCharRule implements TokenizerRule {
 				}
 			}
 			stream.reset();
-//			System.out.println("Outgoing Stream in spcial chars:"
-//					+ stream.getAllTokens());
+			System.out.println("Outgoing Stream in spcial chars:"
+					+ stream.getAllTokens());
 		}
 	}
 }

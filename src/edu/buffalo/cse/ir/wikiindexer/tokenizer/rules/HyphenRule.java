@@ -10,7 +10,7 @@ public class HyphenRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-//			System.out.println("Incoming Stream in hyphen:" + stream.getAllTokens());
+			System.out.println("Incoming Stream in hyphen:" + stream.getAllTokens());
 			String token;
 			// TODO: Remove stream.previous();
 			stream.previous();
@@ -31,7 +31,7 @@ public class HyphenRule implements TokenizerRule {
 				}
 			}
 			stream.reset();
-//			System.out.println("Outgoing Stream in hyphen:" + stream.getAllTokens());
+			System.out.println("Outgoing Stream in hyphen:" + stream.getAllTokens());
 		}
 	}
 }

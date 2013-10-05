@@ -51,8 +51,8 @@ public class AccentRule implements TokenizerRule {
 	public void apply(TokenStream stream) throws TokenizerException {
 		// TODO : execute failing test case
 		if (stream != null) {
-//			System.out.println("Incoming Stream in accent:"
-//					+ stream.getAllTokens());
+			System.out.println("Incoming Stream in accent:"
+					+ stream.getAllTokens());
 			String token = "", result = "";
 			stream.previous();
 			while (stream.hasNext()) {
@@ -66,8 +66,8 @@ public class AccentRule implements TokenizerRule {
 				stream.next();
 			}
 			stream.reset();
-//			System.out.println("Outgoing Stream in accent:"
-//					+ stream.getAllTokens());
+			System.out.println("Outgoing Stream in accent:"
+					+ stream.getAllTokens());
 		}
 	}
 }

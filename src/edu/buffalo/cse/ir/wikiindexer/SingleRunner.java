@@ -42,6 +42,7 @@ import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
 import edu.buffalo.cse.ir.wikiindexer.test.AllTests;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.Tokenizer;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerFactory;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.DocumentTransformer;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.IndexableDocument;
@@ -56,9 +57,11 @@ public class SingleRunner {
 	/**
 	 * @param args
 	 * @throws InterruptedException 
+	 * @throws TokenizerException 
 	 * @throws IndexerException 
 	 */
-	public static void main(String[] args) throws InterruptedException, IndexerException {
+
+	public static void main(String[] args) throws InterruptedException, TokenizerException, IndexerException {
 		if (args.length != 2) {
 			printUsage();
 			System.exit(1);
@@ -76,8 +79,8 @@ public class SingleRunner {
 						if ("t".equals(mode)) {
 							runTests(filename);
 						} else if ("i".equals(mode)) {
-							runIndexer(properties);
-//							readIndexer();
+//							runIndexer(properties);
+							readIndexer();
 						} else if ("b".equals(mode)) {
 							runTests(filename);
 							runIndexer(properties);
@@ -101,7 +104,7 @@ public class SingleRunner {
 
 	}
 	
-	private static void readIndexer() throws IndexerException {
+	private static void readIndexer() throws IndexerException, TokenizerException {
 		IndexReader indexReader = new IndexReader(null, INDEXFIELD.AUTHOR);
 		int nAuthor=0;
 		try {
@@ -134,7 +137,7 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Author count:" + nAuthor);
+		//System.out.println("Author count:" + nAuthor);
 		
 		IndexReader indexReader1 = new IndexReader(null, INDEXFIELD.CATEGORY);
 		int nCategory=0;
@@ -156,24 +159,25 @@ public class SingleRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Category count:" + nCategory);
+		//System.out.println("Category count:" + nCategory);
 		
 		
 		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
 		int nTerm=0;
-//		try {
-		String [] terms = {"Swing","must","Mexico","impress"};
-		Map<String, Integer> map = indexReader2.query(terms);
+		try {
+//		String [] terms = {"Swing","must","Mexico","impress"};
+		/*Map<String, Integer> map = indexReader2.query(terms);
 		for (Map.Entry<String, Integer> entry : map.entrySet()) {
 			System.out.println("Keyyyy : " + entry.getKey() + " Valueeeee : "
 				+ entry.getValue());
-		}
-			/*Map<String,Integer> coll = indexReader2.getPostings("Russ");
-			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
-				System.out.println("Key : " + entry.getKey() + " Value : "
-					+ entry.getValue());
-			}*/
-		/*	FileWriter fw = new FileWriter("files/termOut.txt");
+		}*/
+			Map<String,Integer> coll = indexReader2.getPostings("Swing");
+			System.out.println("###"+ coll.toString());
+//			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
+//				System.out.println("Key : " + entry.getKey() + " Value : "
+//					+ entry.getValue());
+//			}
+			FileWriter fw = new FileWriter("files/termOut.txt");
 			BufferedWriter bw = new BufferedWriter(fw);
 //			nTerm = indexReader2.getTotalKeyTerms();
 			Map<String, LinkedList<PostingNode>> map = indexReader2.getMap();
@@ -196,8 +200,9 @@ public class SingleRunner {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		System.out.println("Term count:" + nTerm);
+		}
+		
+		//System.out.println("Term count:" + nTerm);
 		
 		IndexReader indexReader3 = new IndexReader(null, INDEXFIELD.LINK);
 		//int nLink=0;
@@ -216,12 +221,13 @@ public class SingleRunner {
 		/*} catch (IndexerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+<<<<<<< HEAD
 		}*/
 		//System.out.println("Link count:" + nLink);
 		//}
-	}
-
-	private static void runIndexer(Properties properties) throws InterruptedException {
+	
+		}
+	private static void runIndexer(Properties properties) throws InterruptedException, TokenizerException {
 		long start;
 		System.out.println("Starting .......");
 		ArrayList<WikipediaDocument> list = new ArrayList<WikipediaDocument>();
@@ -246,6 +252,7 @@ public class SingleRunner {
 		
 		IndexableDocument idoc;
 		SharedDictionary docDict = new SharedDictionary(properties, INDEXFIELD.LINK);
+		
 		int currDocId;
 		ThreadedIndexerRunner termRunner = new ThreadedIndexerRunner(properties);
 		SingleIndexerRunner authIdxer = new SingleIndexerRunner(properties, INDEXFIELD.AUTHOR, INDEXFIELD.LINK, docDict, false);
@@ -256,6 +263,7 @@ public class SingleRunner {
 		System.out.println("Starting indexing.....");
 		start = System.currentTimeMillis();
 		double pctComplete = 0;
+		
 		for (int i = 0; i < numdocs; i++) {
 			try {
 				idoc = pool.take().get();
@@ -265,10 +273,10 @@ public class SingleRunner {
 					try {
 						for (INDEXFIELD fld : INDEXFIELD.values()) {
 							stream = idoc.getStream(fld);
-
+							
 							if (stream != null) {
 								tokenmap = stream.getTokenMap();
-
+								
 								if (tokenmap != null) {
 									switch (fld) {
 									case TERM:
@@ -280,16 +288,19 @@ public class SingleRunner {
 												currDocId, tokenmap);
 										break;
 									case CATEGORY:
+										
 										catIdxer.processTokenMap(currDocId,
 												tokenmap);
 										break;
-									case LINK:
+									case LINK:          
+											
 										linkIdxer.processTokenMap(
 												currDocId, tokenmap);
 										break;
 									}
 								}
 							}
+							
 
 						}
 					} catch (IndexerException e) {
@@ -333,7 +344,7 @@ public class SingleRunner {
 		
 	}
 	
-	private static Map<INDEXFIELD, Tokenizer> initMap(Properties props) {
+	private static Map<INDEXFIELD, Tokenizer> initMap(Properties props) throws TokenizerException {
 		HashMap<INDEXFIELD, Tokenizer> map = new HashMap<INDEXFIELD, Tokenizer>(INDEXFIELD.values().length);
 		TokenizerFactory fact = TokenizerFactory.getInstance(props);
 		for (INDEXFIELD fld : INDEXFIELD.values()) {

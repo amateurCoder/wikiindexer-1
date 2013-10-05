@@ -3,21 +3,14 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.omg.PortableServer.POA;
 
 /**
  * @author nikhillo This class is used to write an index to the disk
@@ -123,6 +116,7 @@ public class IndexWriter implements Writeable {
 				PostingNode postingNode = new PostingNode(valueId,
 						numOccurances);
 				linkMap.get(keyId).add(postingNode);
+				
 			} else {
 				LinkedList<PostingNode> linkedList = new LinkedList<PostingNode>();
 				linkedList.addFirst(new PostingNode(0, numOccurances));
@@ -255,9 +249,7 @@ public class IndexWriter implements Writeable {
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(categoryMap);
 			} else if (type.equalsIgnoreCase("TERM")) {
-				System.out.println("DAs");
 				fileOutputStream = new FileOutputStream("files/termMap.txt");
-				System.out.println("DAs");
 				objectOutputStream = new ObjectOutputStream(fileOutputStream);
 				objectOutputStream.writeObject(termMap);
 			} else if (type.equalsIgnoreCase("LINK")) {

@@ -132,7 +132,6 @@ public class WikipediaParserTest {
 	 */
 	@Test
 	public final void testParseTemplates() {
-		assertEquals("<ref></ref><ref></ref>", WikipediaParser.parseTemplates("<ref></ref><ref>{{cite news |title=Украинцы планируют убийства в Грузии? |url=http://www.km.ru/magazin/view.asp?id={5CE15A8F-9F1E-4C36-A007-0C818963B6CD} |work= |publisher=KMnews.RU |date=13 August 2008 |language=Russian |accessdate=4 December 2008 }}</ref>"));
 		assertEquals("", WikipediaParser.parseTemplates("{{YouTube|TnIpQhDn4Zg|Russ Conway playing Side Saddle}}"));
 		assertEquals("", WikipediaParser.parseTemplates("{{Unreferenced stub|auto=yes|date=December 2009}}"));
 		assertEquals("", WikipediaParser.parseTemplates("{{Reflist}}"));
@@ -180,7 +179,7 @@ public class WikipediaParserTest {
 		//1
 		assertEquals(new Object[]{"kingdom", "Kingdom_(biology)"}, WikipediaParser.parseLinks("[[kingdom (biology)|]]"));
 		assertEquals(new Object[]{"king dom", "Kingdom_(biology)"}, WikipediaParser.parseLinks("[[kingdom (biology)|king dom]]"));
-		//assertEquals(new Object[]{"Gold", "Gold_(TV channel)"}, WikipediaParser.parseLinks("[[Gold (TV channel)|Gold]]|"));
+		assertEquals(new Object[]{"Gold", "Gold_(TV channel)"}, WikipediaParser.parseLinks("[[Gold (TV channel)|Gold]]|"));
 		assertEquals(new Object[]{"Redcliffe", "Redcliffe,_Bristol"}, WikipediaParser.parseLinks("[[Redcliffe, Bristol|Redcliffe]]"));
 		
 		//2
@@ -233,6 +232,7 @@ public class WikipediaParserTest {
 		//18
 		assertEquals(new Object[]{"Wikipedia",""}, WikipediaParser.parseLinks("[http://www.wikipedia.org Wikipedia]"));
 		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks("[http://www.wikipedia.org]"));
+		assertEquals(new Object[]{"",""}, WikipediaParser.parseLinks("[http://thedeadrockstarsclub.com/2005.html Thedeadrockstarsclub.com]"));
 	}
 
 }

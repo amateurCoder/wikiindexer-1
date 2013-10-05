@@ -10,7 +10,7 @@ public class NumberRule implements TokenizerRule {
 	@Override
 	public void apply(TokenStream stream) throws TokenizerException {
 		if (stream != null) {
-//			System.out.println("Incoming Stream in number:" + stream.getAllTokens());
+			System.out.println("Incoming Stream in number:" + stream.getAllTokens());
 			String token = "", finalToken = "";
 			String[] tempArr;
 			int nTokens = 0;
@@ -73,7 +73,7 @@ public class NumberRule implements TokenizerRule {
 					stream.remove();
 				}
 				stream.reset();
-//				System.out.println("Outgoing Stream in number:" + stream.getAllTokens());
+				System.out.println("Outgoing Stream in number:" + stream.getAllTokens());
 			}
 		}
 	}

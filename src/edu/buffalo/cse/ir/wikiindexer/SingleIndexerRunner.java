@@ -3,6 +3,9 @@
  */
 package edu.buffalo.cse.ir.wikiindexer;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,7 +26,10 @@ public class SingleIndexerRunner {
 	private SharedDictionary docDict;
 	private boolean lookupBoth;
 	private RunnerThread thr;
-
+	static int doc;
+	FileWriter fw;
+	 BufferedWriter bw;
+	 
 	/**
 	 * 
 	 * @param props
@@ -31,6 +37,7 @@ public class SingleIndexerRunner {
 	 * @param valueField
 	 * @param dict
 	 */
+
 	protected SingleIndexerRunner(Properties props, INDEXFIELD keyfield,
 			INDEXFIELD valueField, SharedDictionary dict, boolean isFwd) {
 		idxWriter = new IndexWriter(props, keyfield, valueField, isFwd);
@@ -38,7 +45,14 @@ public class SingleIndexerRunner {
 		lookupBoth = (keyfield == INDEXFIELD.LINK);
 		pvtQueue = new ConcurrentLinkedQueue<Object[]>();
 		thr = new RunnerThread();
-
+		try {
+			fw = new FileWriter("files/temp.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 bw= new BufferedWriter(fw);
+		
 	}
 
 	/**
@@ -50,8 +64,12 @@ public class SingleIndexerRunner {
 	protected void processTokenMap(int docid, Map<String, Integer> map) throws IndexerException {
 		String key;
 		int value;
+		
+	
 		Object[] arrObj;
+		
 		for (Entry<String, Integer> etr : map.entrySet()) {
+			
 			key = etr.getKey();
 			value = etr.getValue();
 
@@ -61,6 +79,7 @@ public class SingleIndexerRunner {
 				if (lookupBoth) {
 					arrObj[0] = docid;
 					arrObj[1] = docDict.lookup(key);
+					
 				} else {
 					arrObj[0] = key;
 					arrObj[1] = docid;
@@ -154,6 +173,7 @@ public class SingleIndexerRunner {
 					// we have an entry
 					try {
 						if (lookupBoth) {
+						
 							idxWriter.addToIndex((Integer) etr[0], (Integer) etr[1], (Integer) etr[2]);
 						} else {
 							idxWriter.addToIndex((String) etr[0], (Integer) etr[1], (Integer) etr[2]);
