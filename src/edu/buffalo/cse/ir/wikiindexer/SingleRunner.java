@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -55,8 +56,9 @@ public class SingleRunner {
 	/**
 	 * @param args
 	 * @throws InterruptedException 
+	 * @throws IndexerException 
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IndexerException {
 		if (args.length != 2) {
 			printUsage();
 			System.exit(1);
@@ -74,8 +76,8 @@ public class SingleRunner {
 						if ("t".equals(mode)) {
 							runTests(filename);
 						} else if ("i".equals(mode)) {
-//							runIndexer(properties);
-							readIndexer();
+							runIndexer(properties);
+//							readIndexer();
 						} else if ("b".equals(mode)) {
 							runTests(filename);
 							runIndexer(properties);
@@ -99,11 +101,22 @@ public class SingleRunner {
 
 	}
 	
-	private static void readIndexer() {
+	private static void readIndexer() throws IndexerException {
 		IndexReader indexReader = new IndexReader(null, INDEXFIELD.AUTHOR);
 		int nAuthor=0;
 		try {
 			nAuthor= indexReader.getTotalKeyTerms();
+			System.out.println("TOTAL DICT SIZE:" + indexReader.getTotalValueTerms());
+			/*Map<String,Integer> coll = indexReader.getPostings("Addbot");
+			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
+				System.out.println("Key : " + entry.getKey() + " Value : "
+					+ entry.getValue());
+			}*/
+			/*Collection<String> strColl = indexReader.getTopK(5);
+			Iterator<String> it = strColl.iterator();
+			while(it.hasNext()){
+				System.out.println("AUTHOR TERM:" + it.next());
+			}*/
 			/*Map<String, LinkedList<PostingNode>> map = indexReader.getMap();
 //			System.out.println("Map size:" + map.size());
 			Iterator iterator = map.entrySet().iterator();
@@ -127,6 +140,7 @@ public class SingleRunner {
 		int nCategory=0;
 		try {
 			nCategory = indexReader1.getTotalKeyTerms();
+			
 			/*Map<String, LinkedList<PostingNode>> map = indexReader1.getMap();
 			Iterator iterator = map.entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -147,10 +161,21 @@ public class SingleRunner {
 		
 		IndexReader indexReader2 = new IndexReader(null, INDEXFIELD.TERM);
 		int nTerm=0;
-		try {
-			FileWriter fw = new FileWriter("files/termOut.txt");
+//		try {
+		String [] terms = {"Swing","must","Mexico","impress"};
+		Map<String, Integer> map = indexReader2.query(terms);
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			System.out.println("Keyyyy : " + entry.getKey() + " Valueeeee : "
+				+ entry.getValue());
+		}
+			/*Map<String,Integer> coll = indexReader2.getPostings("Russ");
+			for (Map.Entry<String, Integer> entry : coll.entrySet()) {
+				System.out.println("Key : " + entry.getKey() + " Value : "
+					+ entry.getValue());
+			}*/
+		/*	FileWriter fw = new FileWriter("files/termOut.txt");
 			BufferedWriter bw = new BufferedWriter(fw);
-			nTerm = indexReader2.getTotalKeyTerms();
+//			nTerm = indexReader2.getTotalKeyTerms();
 			Map<String, LinkedList<PostingNode>> map = indexReader2.getMap();
 			Iterator iterator = map.entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -158,11 +183,11 @@ public class SingleRunner {
 				LinkedList<PostingNode> list = (LinkedList<PostingNode>) mapEntry.getValue();
 //				System.out.println("Map Key==="+ mapEntry.getKey());
 				bw.write(mapEntry.getKey().toString());
-				bw.write("\n");
-				/*for(int i=1;i<list.size();i++){
+				for(int i=1;i<list.size();i++){
 					PostingNode pn = list.get(i);
-					System.out.println("Term Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
-				}*/
+					bw.write(":Term Posting data:"+pn.getValue()+",Posting freq:" + pn.getFrequency());
+				}
+				bw.write("\n");
 			}
 			bw.close();
 		} catch (IndexerException e) {
@@ -171,13 +196,13 @@ public class SingleRunner {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		System.out.println("Term count:" + nTerm);
 		
 		IndexReader indexReader3 = new IndexReader(null, INDEXFIELD.LINK);
-		int nLink=0;
-		try {
-			nLink = indexReader3.getTotalKeyTerms();
+		//int nLink=0;
+		//try {
+		//	nLink = indexReader3.getTotalKeyTerms();
 			/*Map<Integer, LinkedList<PostingNode>> map = indexReader3.getLinkMap();
 			Iterator iterator = map.entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -188,12 +213,12 @@ public class SingleRunner {
 					System.out.println("Link Posting data:"+pn.getValue()+" Posting freq:" + pn.getFrequency());
 				}
 			}*/
-		} catch (IndexerException e) {
+		/*} catch (IndexerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		System.out.println("Link count:" + nLink);
-		
+		}*/
+		//System.out.println("Link count:" + nLink);
+		//}
 	}
 
 	private static void runIndexer(Properties properties) throws InterruptedException {

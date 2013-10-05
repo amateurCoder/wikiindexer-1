@@ -3,11 +3,16 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -18,18 +23,29 @@ import java.util.regex.Pattern;
  * An abstract class that represents a dictionary object for a given index
  */
 public abstract class Dictionary implements Writeable {
-	public static Map<String,Integer> termDictionary;
+	public static Map<String,Integer> linkDictionary;
+	
+	FileOutputStream fileOutputStream;
+	ObjectOutputStream objectOutputStream;
+	
 	public Dictionary (Properties props, INDEXFIELD field) {
-		//TODO Implement this method
-		termDictionary = new HashMap<String,Integer>();
+		linkDictionary = new HashMap<String,Integer>();
 	}
 	
 	/* (non-Javadoc)
 	 * @see edu.buffalo.cse.ir.wikiindexer.indexer.Writeable#writeToDisk()
 	 */
 	public void writeToDisk() throws IndexerException {
-		// TODO Implement this method
-
+		try {
+			fileOutputStream = new FileOutputStream("files/dictMap.txt");
+			objectOutputStream = new ObjectOutputStream(fileOutputStream);
+			objectOutputStream.writeObject(linkDictionary);
+			objectOutputStream.close();
+		} catch (FileNotFoundException e) {
+			throw new IndexerException(e.getMessage());
+		} catch (IOException e) {
+			throw new IndexerException(e.getMessage());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -48,8 +64,7 @@ public abstract class Dictionary implements Writeable {
 	 * @return true if found, false otherwise
 	 */
 	public boolean exists(String value) {
-		//TODO Implement this method
-		if(termDictionary.get(value)!=null)
+		if(linkDictionary.get(value)!=null)
 		{
 			return true;
 		}
@@ -65,11 +80,10 @@ public abstract class Dictionary implements Writeable {
 	 * null if no match is found
 	 */
 	public Collection<String> query(String queryStr) {
-		//TODO: Implement this method (FOR A BONUS)
 		ArrayList<String> keyMatches = new ArrayList<String>();
 		
 		Iterator<String> keyIterator = keyMatches.iterator();
-		Set<String>keySet = termDictionary.keySet();
+		Set<String>keySet = linkDictionary.keySet();
 		
 		Pattern queryPattern = Pattern.compile(queryStr);
 		
@@ -86,14 +100,10 @@ public abstract class Dictionary implements Writeable {
 			}
 			
 		}
-		System.out.println("The keys found matcing the query are : \n" );
 		while(keyIterator.hasNext())
 		{
 			System.out.println(keyIterator.next()+"\n");
 		}
-		
-		
-		
 		return null;
 	}
 	
@@ -102,8 +112,7 @@ public abstract class Dictionary implements Writeable {
 	 * @return The size of the dictionary
 	 */
 	public int getTotalTerms() {
-		//TODO: Implement this method
-		return termDictionary.size();
+		return linkDictionary.size();
 		
 		
 	}

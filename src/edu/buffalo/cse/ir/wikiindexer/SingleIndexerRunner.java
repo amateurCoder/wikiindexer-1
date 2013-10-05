@@ -136,7 +136,11 @@ public class SingleIndexerRunner {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						idxWriter.cleanUp();
+						try {
+							idxWriter.cleanUp();
+						} catch (IndexerException e) {
+							e.printStackTrace();
+						}
 						break; // everything is done
 					} else {
 						try {

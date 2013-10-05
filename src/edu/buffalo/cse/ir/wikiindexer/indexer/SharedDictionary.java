@@ -41,17 +41,17 @@ public class SharedDictionary extends Dictionary {
 	public synchronized int lookup(String value) {
 		//TODO Implement this method
 		
-		if(termDictionary.get(value)!=null)
+		if(linkDictionary.get(value)!=null)
 		{
 			
-			return termDictionary.get(value);
+			return linkDictionary.get(value);
 		}
 		else
 		{
 			
-			termDictionary.put(value,docId++);
+			linkDictionary.put(value,docId++);
 			
-			return termDictionary.get(value);
+			return linkDictionary.get(value);
 		}
 		
 		

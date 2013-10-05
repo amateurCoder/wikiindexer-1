@@ -346,7 +346,7 @@ public class WikipediaParser {
 			e.printStackTrace();
 		}
 
-		System.out.println("Text Before Parsing" + text);
+//		System.out.println("Text Before Parsing" + text);
 		
 		// TODO Lang links - what to populate in Wikipedia document
 		// TODO Refactor regex expression to constants
@@ -398,7 +398,7 @@ public class WikipediaParser {
 			tempText = tempText.replace(matcher.group(0), tempArr[0]);
 		}
 
-		System.out.println("Text After PArsing@@" + tempText);
+//		System.out.println("Text After PArsing@@" + tempText);
 		
 		// Fetching section
 		String[] sectionArr = tempText.split("[=]{2,6}");

@@ -129,7 +129,11 @@ public class ThreadedIndexerRunner {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						writer.cleanUp();
+						try {
+							writer.cleanUp();
+						} catch (IndexerException e) {
+							e.printStackTrace();
+						}
 						break; // everything is done
 					} else {
 						try {
